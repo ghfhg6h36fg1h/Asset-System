@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+
+<!-- 左侧菜单栏目块 -->
+<div th:fragment="divHead">
+<div class="leftMeun" id="leftMeun">
+    <div id="logoDiv">
+        <p id="logoP"><img id="logo" alt="A" src="images/logo.png"/><span>Asset Management</span></p>
+    </div>
+    <div id="personInfor">
+        <p id="userName">admin</p>
+        <p>
+            <a href="/">退出登录</a>
+        </p>
+    </div>
+    <div class="meun-title">账号管理</div>
+    <div class="meun-item"  role="tab"   ><a href="/PC" > <img src="images/icon_user_grey.png"/>PC管理</a></div>
+    <div class="meun-item"  role="tab"   ><a href="/Record" > <img src="images/icon_user_grey.png"/>操作记录</a></div>
+    <div class="meun-item"  role="tab"   ><a href="/Record" > <img src="images/icon_user_grey.png"/>楼层管理</a></div>
+
+</div>
+</div>
+</body>
+</html>

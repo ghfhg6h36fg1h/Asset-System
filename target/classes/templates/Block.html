@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>MineBlock</title>
+</head>
+<body>
+<div>
+    Welcome to MineBlock~
+    Please choose a difficult and wait……
+</div>
+
+<div>
+<form action="#" method="post" id="DifficultForm" name="DifficultForm" >
+<button type="button" th:onclick="'javascript:MineBlock(5)'">难度一
+</button>
+<button type="button" th:onclick="'javascript:MineBlock(6)'">难度二
+</button>
+<button type="button" th:onclick="'javascript:MineBlock(7)'">难度三
+</button>
+        <input type="hidden" id="difficult" name="difficult" />
+    </form>
+</div>
+<script type="text/javascript" th:inline="javascript" >
+    function MineBlock(difficult) {
+         var form=document.getElementById("DifficultForm");
+        document.getElementById("difficult").value=difficult;
+         form.action="MineBlock";
+         form.submit();
+    }
+
+</script>
+</body>
+
+
+</html>
