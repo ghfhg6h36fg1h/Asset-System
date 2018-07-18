@@ -53,10 +53,11 @@ public class PCController {
         String jumpPage = request.getParameter("jumpPage");//获取跳转页码
         String type = request.getParameter("type");//获取页码类型
         String keyWord = request.getParameter("keyWord");//获取关键字
-        String sort = request.getParameter("sort");//获取排序值
+        String sort = request.getParameter("ss");//获取排序值
+        String state=request.getParameter("st");//获取调拨值
 
         List<PC> pcList = new ArrayList<PC>();
-        HashMap map = pcService.findPCByPage(tempPage, jumpPage, type, keyWord, sort, request);
+        HashMap map = pcService.findPCByPage(tempPage, jumpPage, type, keyWord, sort,state,request);
         pcList = (List<PC>) map.get("pcList");
         model.addAttribute("PCs", pcList);
         model.addAttribute("PCPage", map.get("Allpage"));

@@ -15,9 +15,9 @@ import java.util.Map;
  */
 public interface PCService {
 
-    HashMap findPCByPage(String tempPage, String jumpPage, String type, String keyWord, String sort, HttpServletRequest request );
+    HashMap findPCByPage(String tempPage, String jumpPage, String type, String keyWord, String sort,String state, HttpServletRequest request );
 
-    long Findcount(String keyword);
+    long Findcount(String keyword,String state);
 
     PC findByID(long id);
     List<PC> findAllPC();

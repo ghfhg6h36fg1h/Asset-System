@@ -15,22 +15,22 @@ import java.util.List;
 @Repository
 public interface PcDao  { //extends CrudRepository<PC,Long> {
     @Select("select * from tb2_pc where " +
-            "(pcname like '%' #{keyword} '%')or(model like '%' #{keyword} '%')or" +
+            "((pcname like '%' #{keyword} '%')or(model like '%' #{keyword} '%')or" +
             "(username like '%' #{keyword} '%' )or(user_number like '%' #{keyword} '%' )" +
             "or(asset_number like '%' #{keyword} '%' )or(mac like '%' #{keyword} '%')or" +
-            "(floor like '%' #{keyword} '%' )or(sn like '%' #{keyword} '%' )" +
+            "(floor like '%' #{keyword} '%' )or(sn like '%' #{keyword} '%' ))and(state like '%' #{state} '%')" +
             "ORDER by ${sort} ${sortType} limit #{page},#{PrintNumber}")
     List<PC> findPCByPage(@Param("page") long page,@Param("PrintNumber") int PrintNumber,
                           @Param("keyword") String keyword,@Param("sort") String sort,
-                          @Param("sortType")String sortType);
+                          @Param("sortType")String sortType,@Param("state")String state);
 
     @Select("select count(*) from tb2_pc where"+
-            "(pcname like '%' #{keyword} '%')or(model like '%' #{keyword} '%')or"+
+            "((pcname like '%' #{keyword} '%')or(model like '%' #{keyword} '%')or"+
             "(username like '%' #{keyword} '%' )or(user_number like '%' #{keyword} '%' )" +
             "or(asset_number like '%' #{keyword} '%' )or(mac like '%' #{keyword} '%')or" +
-            "(floor like '%' #{keyword} '%' )or(sn like '%' #{keyword} '%' )"
+            "(floor like '%' #{keyword} '%' )or(sn like '%' #{keyword} '%' ))and(state like '%' #{state} '%')"
     )
-    long Findcount(@Param("keyword")String keyword);
+    long Findcount(@Param("keyword")String keyword,@Param("state")String state);
 
     @Select("select * from tb2_pc where id=#{id}")
     PC findByID(@Param("id") long id);

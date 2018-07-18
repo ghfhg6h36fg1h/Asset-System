@@ -26,10 +26,6 @@ public class HelloController {
 		return "Welcome";
 	}
 
-	@RequestMapping("/login")
-	public String login() {
-		return "login";
-	}
 @RequestMapping("/VerifyLogin")
 public String Verify(HttpServletRequest Request){
  	    String password=Request.getParameter("Password");

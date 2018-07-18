@@ -33,7 +33,7 @@ public class PCServiceImpl implements PCService {
     private PcDao pcdao;
 
     @Override
-    public HashMap findPCByPage(String tempPage, String jumpPage, String type, String keyWord, String sort, HttpServletRequest request) {
+    public HashMap findPCByPage(String tempPage, String jumpPage, String type, String keyWord, String sort, String state,HttpServletRequest request) {
 
         HttpSession session = request.getSession();
         long currentPage;  //当前页
@@ -46,6 +46,11 @@ public class PCServiceImpl implements PCService {
                 session.setAttribute("keyword", "");
                 session.setAttribute("sort", "username");
                 session.setAttribute("sortType", "ASC");
+
+                if (state==null)//点查询时，或初始化
+                {
+                    session.setAttribute("state","");
+                }
             }
         } else if (tempPage != null) {//获取当前页 +1或-1
             int page = Integer.parseInt(tempPage);
@@ -60,6 +65,9 @@ public class PCServiceImpl implements PCService {
         // 分页多条件缓存
         if (keyWord != null)
             session.setAttribute("keyword", keyWord);
+        if (state!=null) {
+            session.setAttribute("state", state);
+        }
         if (sort != null) {
             if (sort.equals(session.getAttribute("sort")))  //重复选择排序方式
                 session.setAttribute("sortType", "DESC");//倒叙
@@ -71,14 +79,17 @@ public class PCServiceImpl implements PCService {
         keyWord = (String) session.getAttribute("keyword");
         sort = (String) session.getAttribute("sort");
         sortType = (String) session.getAttribute("sortType");
-        Allpage = this.Findcount(keyWord) / PrintNumber + 1;
+        state=(String)session.getAttribute("state");
+        Allpage = this.Findcount(keyWord,state) / PrintNumber + 1;
+
 //防呆
         if (currentPage > Allpage) currentPage = Allpage;
         if (currentPage <= 0) currentPage = 1;
 
         long StatNumber = (currentPage - 1) * PrintNumber;
         List<PC> pcList = new ArrayList<PC>();
-        pcList = pcdao.findPCByPage(StatNumber, PrintNumber, keyWord, sort, sortType);
+
+        pcList = pcdao.findPCByPage(StatNumber, PrintNumber, keyWord, sort, sortType,state);
 
 
         HashMap map = new HashMap();
@@ -90,8 +101,8 @@ public class PCServiceImpl implements PCService {
     }
 
     @Override
-    public long Findcount(String keyword) {
-        return pcdao.Findcount(keyword);
+    public long Findcount(String keyword,String state) {
+        return pcdao.Findcount(keyword,state);
     }
 
     @Override

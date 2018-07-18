@@ -37,5 +37,6 @@ public class PcJpaServiceImpl implements PcJpaService {
        PC pc=new PC(pcName,model,name,asset,mac,sn,number,floor,state);
        pc.setId(id);
         pcJpadao.save(pc);
+
     }
 }
