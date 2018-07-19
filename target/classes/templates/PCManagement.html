@@ -176,7 +176,7 @@
                         document.getElementById("updateInfo_PCID").value = yyy[index].id;
                         document.getElementById("updateInfo_PCname").value = yyy[index].PCName;
                         document.getElementById("updateInfo_floor").value = yyy[index].floor;
-                        document.getElementById("updateInfo_Model").value = yyy[index].model;
+                        document.getElementById("updateInfo_model").value = yyy[index].model;
                         document.getElementById("updateInfo_userName").value = yyy[index].username;
                         document.getElementById("updateInfo_AssetNumber").value = yyy[index].assetNumber;
                         document.getElementById("updateInfo_MAC").value = yyy[index].MAC;
@@ -233,8 +233,14 @@
                                         <div class="form-group">
                                             <label for="sLink" class="col-xs-3 control-label">型号</label>
                                             <div class="col-xs-8 ">
-                                                <input type="" class="form-control input-sm duiqi" id="add_model"
-                                                       placeholder=""/>
+                                                <select id="add_model" class=" form-control select-duiqi">
+                                                    <div th:each="mf:${mflist}">
+                                                        <div th:if="${mf.type} eq '1'">
+                                                            <option th:value="${mf.name}"><span th:text="${mf.name}"></span></option>
+                                                        </div>
+                                                    </div>
+                                                </select>
+
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -276,13 +282,11 @@
                                             <label for="sKnot" class="col-xs-3 control-label">楼层：</label>
                                             <div class="col-xs-8">
                                                 <select id="add_floor" class=" form-control select-duiqi">
-                                                    <option value="研发三楼">研发三楼</option>
-                                                    <option value="研发四楼">研发四楼</option>
-                                                    <option value="研发二楼">研发二楼</option>
-                                                    <option value="产线一楼">产线一楼</option>
-                                                    <option value="产线二楼">产线二楼</option>
-                                                    <option value="产线三楼">产线三楼</option>
-                                                    <option value="产线四楼">产线四楼</option>
+                                                    <div th:each="mf:${mflist}">
+                                                    <div th:if="${mf.type} eq '0'">
+                                                    <option th:value="${mf.name}"><span th:text="${mf.name}"></span></option>
+                                                    </div>
+                                                    </div>
                                                 </select>
                                             </div>
                                         </div>
@@ -353,7 +357,7 @@
                     function UpdatePC(form) {
                         var id = form.updateInfo_PCID.value;
                         var pcName = form.updateInfo_PCname.value;
-                        var model = form.updateInfo_Model.value;
+                        var model = form.updateInfo_model.value;
                         var name = form.updateInfo_userName.value;
                         var asset = form.updateInfo_AssetNumber.value;
                         var mac = form.updateInfo_MAC.value;
@@ -362,6 +366,7 @@
                         var floor = form.updateInfo_floor.value;
                         var state = form.updateInfo_state.value;
                         var str = "/UpdatePC";
+
                         $.ajax({
                             url: str,
                             async: false,
@@ -434,21 +439,25 @@
                                             <label for="sKnot" class="col-xs-3 control-label">楼层：</label>
                                             <div class="col-xs-8">
                                                 <select id="updateInfo_floor" class=" form-control select-duiqi">
-                                                    <option value="研发三楼">研发三楼</option>
-                                                    <option value="研发四楼">研发四楼</option>
-                                                    <option value="研发二楼">研发二楼</option>
-                                                    <option value="产线一楼">产线一楼</option>
-                                                    <option value="产线二楼">产线二楼</option>
-                                                    <option value="产线三楼">产线三楼</option>
-                                                    <option value="产线四楼">产线四楼</option>
+                                                    <div th:each="mf:${mflist}">
+                                                        <div th:if="${mf.type} eq '0'">
+                                                            <option th:value="${mf.name}"><span th:text="${mf.name}"></span></option>
+                                                        </div>
+                                                    </div>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="sOrd" class="col-xs-3 control-label">型号：</label>
-                                            <div class="col-xs-8">
-                                                <input type="" class="form-control input-sm duiqi" id="updateInfo_Model"
-                                                       placeholder=""/>
+                                            <label for="sLink" class="col-xs-3 control-label">型号</label>
+                                            <div class="col-xs-8 ">
+                                                <select id="updateInfo_model" class=" form-control select-duiqi">
+                                                    <div th:each="mf:${mflist}">
+                                                        <div th:if="${mf.type} eq '1'">
+                                                            <option th:value="${mf.name}"><span th:text="${mf.name}"></span></option>
+                                                        </div>
+                                                    </div>
+                                                </select>
+
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -527,7 +536,7 @@
                                         <div class="form-group ">
                                             <label for="sName" class="col-xs-3 control-label">PC名：</label>
                                             <div class="col-xs-8 ">
-                                                <input type="" class="form-control input-sm duiqi" id="modelInfo_PCname"
+                                                <input  style="color: #2d2d2d" readonly="readonly" class="form-control input-sm duiqi" id="modelInfo_PCname"
                                                        placeholder=""/>
                                                 <input type="hidden" class="form-control input-sm duiqi"
                                                        id="modelInfo_ID" placeholder=""/>
@@ -537,49 +546,49 @@
                                         <div class="form-group">
                                             <label for="sLink" class="col-xs-3 control-label">楼层：</label>
                                             <div class="col-xs-8 ">
-                                                <input type="" id="modelInfo_floor" class="form-control input-sm duiqi"
+                                                <input style="color: #2d2d2d" readonly="readonly" id="modelInfo_floor" class="form-control input-sm duiqi"
                                                        placeholder=""/>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="sOrd" class="col-xs-3 control-label">型号：</label>
                                             <div class="col-xs-8">
-                                                <input type="" class="form-control input-sm duiqi" id="modelInfo_Model"
+                                                <input style="color: #2d2d2d" readonly="readonly" class="form-control input-sm duiqi" id="modelInfo_Model"
                                                        placeholder=""/>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="sKnot" class="col-xs-3 control-label">姓名：</label>
                                             <div class="col-xs-8">
-                                                <input type="" class="form-control input-sm duiqi"
+                                                <input style="color: #2d2d2d" readonly="readonly" class="form-control input-sm duiqi"
                                                        id="modelInfo_userName" placeholder=""/>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="sKnot" class="col-xs-3 control-label">资产编号：</label>
                                             <div class="col-xs-8">
-                                                <input type="" class="form-control input-sm duiqi"
+                                                <input style="color: #2d2d2d" readonly="readonly" class="form-control input-sm duiqi"
                                                        id="modelInfo_AssetNumber" placeholder=""/>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="sKnot" class="col-xs-3 control-label">MAC：</label>
                                             <div class="col-xs-8">
-                                                <input type="" class="form-control input-sm duiqi" id="modelInfo_MAC"
+                                                <input style="color: #2d2d2d" readonly="readonly" class="form-control input-sm duiqi" id="modelInfo_MAC"
                                                        placeholder=""/>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="sKnot" class="col-xs-3 control-label">SN：</label>
                                             <div class="col-xs-8">
-                                                <input type="" class="form-control input-sm duiqi" id="modelInfo_SN"
+                                                <input style="color: #2d2d2d" readonly="readonly" class="form-control input-sm duiqi" id="modelInfo_SN"
                                                        placeholder=""/>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="sKnot" class="col-xs-3 control-label">工号：</label>
                                             <div class="col-xs-8">
-                                                <input type="" class="form-control input-sm duiqi"
+                                                <input style="color: #2d2d2d" readonly="readonly" class="form-control input-sm duiqi"
                                                        id="modelInfo_userNumber" placeholder=""/>
                                             </div>
                                         </div>

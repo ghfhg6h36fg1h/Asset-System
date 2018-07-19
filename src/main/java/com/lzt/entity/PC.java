@@ -1,7 +1,5 @@
 package com.lzt.entity;
 
-import org.apache.ibatis.annotations.Param;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

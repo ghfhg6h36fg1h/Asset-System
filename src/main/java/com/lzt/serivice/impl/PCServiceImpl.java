@@ -7,7 +7,9 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.lzt.dao.PcDao;
+import com.lzt.entity.ModelFloor;
 import com.lzt.entity.PC;
+import com.lzt.serivice.ModelFloorService;
 import com.lzt.serivice.PCService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,8 @@ public class PCServiceImpl implements PCService {
     public static final int PrintNumber = 50;
     @Autowired
     private PcDao pcdao;
+    @Autowired
+    private ModelFloorService modelFloorService;
 
     @Override
     public HashMap findPCByPage(String tempPage, String jumpPage, String type, String keyWord, String sort, String state,HttpServletRequest request) {
@@ -87,12 +91,13 @@ public class PCServiceImpl implements PCService {
         if (currentPage <= 0) currentPage = 1;
 
         long StatNumber = (currentPage - 1) * PrintNumber;
-        List<PC> pcList = new ArrayList<PC>();
+        List<PC> pcList = pcdao.findPCByPage(StatNumber, PrintNumber, keyWord, sort, sortType,state);
 
-        pcList = pcdao.findPCByPage(StatNumber, PrintNumber, keyWord, sort, sortType,state);
-
+// 取出所有ModelFloor
+        List<ModelFloor> mflist=modelFloorService.findAll();
 
         HashMap map = new HashMap();
+        map.put("mflist",mflist);
         map.put("pcList", pcList);
         map.put("Allpage", Allpage);
         map.put("currentPage", currentPage);

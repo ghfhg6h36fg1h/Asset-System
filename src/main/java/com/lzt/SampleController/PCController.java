@@ -1,11 +1,9 @@
 package com.lzt.SampleController;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.MultiFormatWriter;
+
 import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
+
+import com.lzt.entity.ModelFloor;
 import com.lzt.entity.PC;
 import com.lzt.serivice.PCService;
 import com.lzt.serivice.PcJpaService;
@@ -22,12 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 
 //Controller 单独可跳转页面
@@ -56,9 +52,12 @@ public class PCController {
         String sort = request.getParameter("ss");//获取排序值
         String state=request.getParameter("st");//获取调拨值
 
-        List<PC> pcList = new ArrayList<PC>();
         HashMap map = pcService.findPCByPage(tempPage, jumpPage, type, keyWord, sort,state,request);
-        pcList = (List<PC>) map.get("pcList");
+
+        List<PC> pcList = (List<PC>) map.get("pcList");
+        List<ModelFloor> mflist=(List<ModelFloor>) map.get("mflist");
+
+        model.addAttribute("mflist", mflist);
         model.addAttribute("PCs", pcList);
         model.addAttribute("PCPage", map.get("Allpage"));
         model.addAttribute("currentPage", map.get("currentPage"));
