@@ -40,9 +40,8 @@ public class PCController {
     @Autowired
     HttpServletRequest request;
 
-
-    @RequestMapping("/PC")
     // 查询PC列表
+    @RequestMapping("/PC")
     public String GetPCList(Model model) {
 
         String tempPage = request.getParameter("page");  //获取页码
