@@ -18,6 +18,16 @@ public class IBM {
     private String model2;
     private String sn;
     private String time;
+
+    public IBM(){}
+    public IBM(String name,String model1 ,String model2,String sn,String time)
+    {
+        setName(name);
+        setModel1(model1);
+        setModel2(model2);
+        setSn(sn);
+        setTime(time);
+    }
     public long getId() {
         return id;
     }

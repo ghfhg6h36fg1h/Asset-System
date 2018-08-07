@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.lzt;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.zxing.BarcodeFormat;

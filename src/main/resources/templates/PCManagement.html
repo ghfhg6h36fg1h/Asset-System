@@ -369,7 +369,7 @@
 
                         $.ajax({
                             url: str,
-                            async: false,
+                            async: true,
                             type: "POST",
                             data: {
                                 id: id, pcName: pcName, model: model, name: name, asset: asset, mac: mac,
@@ -382,6 +382,7 @@
                                 alert("error");
                             }
                         });
+                        <!--异步的时候 后面加个执行语句拖延时间，为了在刷新页面之前得到回调 -->
                         form.updateInfo_floor.value="";
                     }
                 </script>

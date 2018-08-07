@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -51,8 +52,12 @@ public class IBMServiceImpl implements IBMService {
             else
                 currentPage = page - 1;
         } else {  //跳转页面
-            int page = Integer.parseInt(jumpPage);
-            currentPage = page;
+            if (jumpPage=="")
+                currentPage=1;
+            else {
+                int page = Integer.parseInt(jumpPage);
+                currentPage = page;
+            }
         }
         // 分页多条件缓存
         if (keyWord != null)
@@ -85,7 +90,7 @@ public class IBMServiceImpl implements IBMService {
     @Override
     public void BuildQRById(long id) throws WriterException, IOException {
         IBM ibm = findByID(id);
-        String filePath = "D://二维码/";  //后期可加时间控件区分名字
+        String filePath = "/qr/";  //后期可加时间控件区分名字
         String fileName = ibm.getName() + ibm.getSn() + "-QR.png";
 
         String content = "名称:  " + ibm.getName() + "\n型号:  " + ibm.getModel1() +
@@ -102,7 +107,9 @@ public class IBMServiceImpl implements IBMService {
         Path path = FileSystems.getDefault().getPath(filePath, fileName);
         MatrixToImageWriter.writeToPath(bitMatrix, format, path);// 输出图像
         System.out.println(ibm.getName() + "  输出成功.");
-
+      //  File file = new File(filePath+fileName);
+      //  file.delete();
+      //  System.out.println(filePath+fileName+" 删除成功");
     }
 
     @Override

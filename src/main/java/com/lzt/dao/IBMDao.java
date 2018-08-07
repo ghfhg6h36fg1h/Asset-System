@@ -2,11 +2,9 @@ package com.lzt.dao;
 
 
 import com.lzt.entity.IBM;
-import com.lzt.entity.PC;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 /**
@@ -33,4 +31,5 @@ public interface IBMDao {
 
     @Select("select * from tb2_ibm")
     List<IBM> findAll();
+
 }

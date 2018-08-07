@@ -2,15 +2,20 @@ package com.lzt.SampleController;
 
 import com.google.zxing.WriterException;
 import com.lzt.entity.IBM;
+import com.lzt.serivice.IBMJpaService;
 import com.lzt.serivice.IBMService;
 import com.lzt.serivice.ModelFloorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,6 +29,9 @@ public class IBMController {
 
     @Autowired
     IBMService ibmService;
+
+    @Autowired
+    IBMJpaService ibmJpaService;
 
     @RequestMapping("/IBM")
     public String GetPCList(Model model) {
@@ -42,6 +50,52 @@ public class IBMController {
 
         return "IBMManagement";
     }
+
+    @RequestMapping(value="/SaveIBM" ,method = RequestMethod.POST)
+    public void addIBM(HttpServletResponse response) throws ServletException, IOException {
+
+        String name = request.getParameter("IBMName");
+        String model1 = request.getParameter("model");
+        String model2 = request.getParameter("model2");
+        String sn = request.getParameter("sn");
+        String time = request.getParameter("time");
+
+        ibmJpaService.save(name, model1, model2, sn, time);
+
+        response.setContentType("text/html;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        out.flush();
+        out.close();
+    }
+
+    @RequestMapping(value = "/DeleteIBM", method = RequestMethod.POST)
+
+    public void DeleteBIM(HttpServletResponse response) throws SecurityException, IOException {
+
+        long id = Long.parseLong(request.getParameter("id"));
+
+        ibmJpaService.delete(id);
+    }
+    @RequestMapping(value = "/UpdateIBM", method = RequestMethod.POST)
+    public void UpdateIBM(HttpServletResponse response) throws ServletException, IOException {
+
+        long id = Long.parseLong(request.getParameter("id"));
+        String name = request.getParameter("name");
+        String model1 = request.getParameter("model1");
+        String model2 = request.getParameter("model2");
+        String sn = request.getParameter("sn");
+        String time = request.getParameter("time");
+
+
+
+        ibmJpaService.update(id, name, model1, model2,  sn, time);
+
+        response.setContentType("text/html;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        out.flush();
+        out.close();
+    }
+
 
     @RequestMapping("/IBMQR")
     public String IBMQR() throws WriterException, IOException {

@@ -48,8 +48,8 @@ public class PCServiceImpl implements PCService {
             currentPage = 1;
             if (sort == null) {//最初始
                 session.setAttribute("keyword", "");
-                session.setAttribute("sort", "username");
-                session.setAttribute("sortType", "ASC");
+                session.setAttribute("sort", "model");
+                session.setAttribute("sortType", "DESC");
 
                 if (state==null)//点查询时，或初始化
                 {
@@ -63,8 +63,12 @@ public class PCServiceImpl implements PCService {
             else
                 currentPage = page - 1;
         } else {  //跳转页面
-            int page = Integer.parseInt(jumpPage);
-            currentPage = page;
+            if (jumpPage=="")
+                currentPage=1;
+            else {
+                int page = Integer.parseInt(jumpPage);
+                currentPage = page;
+            }
         }
         // 分页多条件缓存
         if (keyWord != null)
@@ -74,9 +78,9 @@ public class PCServiceImpl implements PCService {
         }
         if (sort != null) {
             if (sort.equals(session.getAttribute("sort")))  //重复选择排序方式
-                session.setAttribute("sortType", "DESC");//倒叙
+                session.setAttribute("sortType", "ASC");//倒叙
             else {
-                session.setAttribute("sortType", "ASC");
+                session.setAttribute("sortType", "DESC");
                 session.setAttribute("sort", sort);
             }
         }
@@ -89,6 +93,7 @@ public class PCServiceImpl implements PCService {
 //防呆
         if (currentPage > Allpage) currentPage = Allpage;
         if (currentPage <= 0) currentPage = 1;
+
 
         long StatNumber = (currentPage - 1) * PrintNumber;
         List<PC> pcList = pcdao.findPCByPage(StatNumber, PrintNumber, keyWord, sort, sortType,state);
@@ -125,7 +130,7 @@ public class PCServiceImpl implements PCService {
     @Override
     public void BuildQRById(long id) throws WriterException,IOException {
         PC pc = findByID(id);
-        String filePath = "D://二维码/";  //后期可加时间控件区分名字
+        String filePath = "/qr/";  //后期可加时间控件区分名字
         String fileName = pc.getPCName()+"-QR.png";
 
         String content ="PC名:  "+pc.getPCName()+"\n楼层:  "+pc.getFloor()+

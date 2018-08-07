@@ -24,4 +24,6 @@ public interface IBMService {
     void BuildQRById(long id) throws WriterException, IOException;
 
     List<IBM> findAll();
+
+
 }
