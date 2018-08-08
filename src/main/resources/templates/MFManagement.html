@@ -13,11 +13,367 @@
         </a>
         <!-- Tab panes -->
         <div class="tab-content">
+            <!-- 资源管理模块 -->
+            <div role="tabpanel" class="tab-pane active" id="sour">
+                <div class="check-div form-inline">
+                </div>
+                <div class="data-div">
+                    <div class="row tableHeader">
+                        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 ">
+                            编码
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            分类
+                        </div>
+                        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                            名称
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            操作
+                        </div>
+                    </div>
+                    <div class="tablebody">
+                        <div class="row">
+                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                1
+                            </div>
+                            <div id="topAD" class="col-lg-4 col-md-4 col-sm-4 col-xs-4" role="button"
+                                 data-toggle="collapse" data-parent="#accordion" href="#collapseSystem"
+                                 aria-expanded="true" aria-controls="collapseOne">
+                                <span id="topA" class="glyphicon  glyphicon-triangle-bottom  "></span> <span>综合管理</span>
+                            </div>
+                        </div>
+                        <input type="hidden" class="form-control input-sm duiqi" id="type"
+                               placeholder=""/>
+                        <div id="collapseSystem" class="collapse " aria-expanded="true">
+                            <!--楼层管理-->
+                            <div class="row">
+                                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 levl2 ">
+                                    2
+                                </div>
+                                <div id="topBD" class="col-lg-4 col-md-4 col-sm-4 col-xs-4 levl2" role="button"
+                                     data-toggle="collapse" data-parent="#accordion" href="#collapseAccount"
+                                     aria-expanded="true" aria-controls="collapseOne">
+                                    <span onClick="changeB()" id="topB"
+                                          class="glyphicon glyphicon-triangle-bottom"></span> <span>楼层管理</span>
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                    <button onclick="FloorType()" class="btn btn-info btn-xs" data-toggle="modal"
+                                            data-target="#AddMF">
+                                        添加
+                                    </button>
+
+                                </div>
+                            </div>
+                            <!--楼层折叠-->
+                            <div id="collapseAccount" class="collapse ">
+
+                                <div th:each="mf,mfStat:${mflist}">
+                                    <div th:if="${mf.type} eq '0'">
+                                        <div class="row">
+                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4  levl3">
+                                                <span class=""> &nbsp;</span>
+                                            </div>
+                                            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                                                <span th:text="${mf.name}"></span>
+                                            </div>
+                                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                                <button th:onclick="'javascript:UpdateMFInfo(\''+${mfStat.index}+'\')'"
+                                                        class="btn btn-success btn-xs" data-toggle="modal"
+                                                        data-target="#changeSource">修改
+                                                </button>
+                                                <button class="btn btn-danger btn-xs" data-toggle="modal"
+                                                        th:onclick="'javascript:DeleteMFInfo(\''+${mfStat.index}+'\')'"
+                                                        data-target="#deleteSource">删除
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--型号管理-->
+                            <div class="row">
+                                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 levl2 ">
+                                    3
+                                </div>
+                                <div id="topCD" class="col-lg-4 col-md-4 col-sm-4 col-xs-4 levl2" role="button"
+                                     data-toggle="collapse" data-parent="#accordion" href="#collapseSchool"
+                                     aria-expanded="true" aria-controls="collapseOne">
+                                    <span id="topC"
+                                          class="glyphicon glyphicon-triangle-bottom"></span><span> 型号管理</span>
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                    <button onclick="ModelType()" class="btn btn-info btn-xs" data-toggle="modal"
+                                            data-target="#AddMF">
+                                        添加
+                                    </button>
 
 
+                                </div>
+                            </div>
+                            <!--型号折叠-->
+                            <div id="collapseSchool" class="collapse ">
+
+                                <div th:each="mf,mfStat:${mflist}">
+                                    <div th:if="${mf.type} eq '1'">
+                                        <div class="row">
+                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4  levl3">
+                                                <span class=""> &nbsp;</span>
+                                            </div>
+                                            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                                                <span th:text="${mf.name}"></span>
+                                            </div>
+                                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                                <button th:onclick="'javascript:UpdateMFInfo(\''+${mfStat.index}+'\')'"
+                                                        class="btn btn-success btn-xs" data-toggle="modal"
+                                                        data-target="#changeSource">修改
+                                                </button>
+                                                <button class="btn btn-danger btn-xs" data-toggle="modal"
+                                                        th:onclick="'javascript:DeleteMFInfo(\''+${mfStat.index}+'\')'"
+                                                        data-target="#deleteSource">删除
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--添加资源弹出窗口-->
+                <div class="modal fade" id="AddMF" role="dialog" aria-labelledby="gridSystemModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">添加资源</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                    <form class="form-horizontal">
+                                        <div class="form-group ">
+                                            <label class="col-xs-3 control-label">名称：</label>
+                                            <div class="col-xs-8 ">
+                                                <input type="" class="form-control input-sm duiqi" id="AddName"
+                                                       placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-3 control-label">备注：</label>
+                                            <div class="col-xs-8 ">
+                                                <input type="" class="form-control input-sm duiqi" id="remark"
+                                                       placeholder=""/>
+
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取
+                                                消
+                                            </button>
+                                            <button type="submit" onclick="addMF(this.form)"
+                                                    class="btn btn-xs btn-green">保 存
+                                            </button>
+                                            <button type="button" onclick="addMF(this.form)"
+                                                    class="btn btn-xs btn-green">继续添加并保存
+                                            </button>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--修改资源弹出窗口-->
+                <div class="modal fade" id="changeSource" role="dialog" aria-labelledby="gridSystemModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="Update">修改信息</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                    <form class="form-horizontal">
+                                        <div class="form-group ">
+                                            <label class="col-xs-3 control-label">名称：</label>
+                                            <div class="col-xs-8 ">
+                                                <input type="" class="form-control input-sm duiqi" id="updateInfo_name"
+                                                       placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-3 control-label">备注：</label>
+                                            <div class="col-xs-8 ">
+                                                <input type="" class="form-control input-sm duiqi"
+                                                       id="updateInfo_remark"
+                                                       placeholder=""/>
+                                                <input type="hidden" class="form-control input-sm duiqi"
+                                                       id="updateInfo_id"
+                                                       placeholder=""/>
+                                                <input type="hidden" class="form-control input-sm duiqi"
+                                                       id="updateInfo_type"
+                                                       placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取
+                                                消
+                                            </button>
+                                            <button type="submit" onclick="UpdateMF(this.form)"
+                                                    class="btn btn-xs btn-green">修 改
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!--弹出删除资源警告窗口-->
+                <div class="modal fade" id="deleteSource" role="dialog" aria-labelledby="gridSystemModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+
+                                <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                    确定要删除该资源？删除后不可恢复！
+                                </div>
+                            </div>
+                            <form>
+                                <div class="modal-footer">
+                                    <input type="hidden" class="form-control input-sm duiqi" id="deleteInfo_id"
+                                           placeholder=""/>
+                                    <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消</button>
+                                    <button type="submit" onclick="deleteMF(this.form)" class="btn btn-xs btn-danger">删
+                                        除
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+
+            </div>
         </div>
     </div>
 </div>
+<!--修改模态框传值-->
+<script th:inline="javascript" type="text/javascript">
+    function UpdateMFInfo(index) {
+        var yyy = [[${mflist}]];
+
+        document.getElementById("updateInfo_id").value = yyy[index].id;
+        document.getElementById("updateInfo_name").value = yyy[index].name;
+        document.getElementById("updateInfo_remark").value = yyy[index].remark;
+        document.getElementById("updateInfo_type").value = yyy[index].type;
+
+    }
+
+</script>
+<!--删除模态框传值-->
+<script th:inline="javascript" type="text/javascript">
+    function DeleteMFInfo(index) {
+        var xxx = [[${mflist}]];
+        document.getElementById("deleteInfo_id").value = xxx[index].id;
+    }
+</script>
+
+<!--修改MF AJAX-->
+<script type="text/javascript">
+    function UpdateMF(form) {
+        var id = form.updateInfo_id.value;
+        var remark = form.updateInfo_remark.value;
+        var name = form.updateInfo_name.value;
+        var type = form.updateInfo_type.value;
+        var str = "/UpdateMF";
+        $.ajax({
+            url: str,
+            async: false,
+            type: "POST",
+            data: {
+                id: id, name: name, remark: remark, type: type
+            },
+            success: function () {
+                alert("Success")
+            },
+        });
+    }
+</script>
+<!--删除MF AJAX-->
+<script type="text/javascript">
+    function deleteMF(form) {
+        var id = form.deleteInfo_id.value;
+
+        var str = "/deleteMF";
+        $.ajax({
+            url: str,
+            async: false,
+            type: "POST",
+            data: {
+                id: id
+            },
+            success: function () {
+                alert("Success")
+            },
+        });
+    }
+</script>
+
+<!--添加前的类型赋值 -->
+<script>
+    function FloorType() {
+        document.getElementById("type").value = 0;
+    }
+
+    function ModelType() {
+        document.getElementById("type").value = 1;
+    }
+</script>
+<!--添加MF AJAX-->
+<script type="text/javascript">
+    function addMF(form) {
+        var name = form.AddName.value;
+        var remark = form.remark.value;
+        var type = document.getElementById("type").value;
+        var str = "/SaveMF";
+        $.ajax({
+            url: str,
+            async: false,
+            type: "POST",
+            data: {
+                name: name, remark: remark, type: type
+            },
+            success: function () {
+                alert("Success")
+            },
+        });
+        form.AddName.value = "";
+        form.remark.value = "";
+
+    }
+</script>
 
 </body>
 

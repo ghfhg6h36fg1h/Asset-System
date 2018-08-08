@@ -29,4 +29,21 @@ public class ModelFloorServiceImpl implements ModelFloorService {
             mfList.add(Imf.next());
         return mfList;
     }
+
+    @Override
+    public void save(String name,String type,String remark) {
+        mfdao.save(new ModelFloor(name,type,remark));
+    }
+
+    @Override
+    public void update(long id, String name, String type, String remark) {
+        ModelFloor mf=new ModelFloor(name,type,remark);
+        mf.setId(id);
+        mfdao.save(mf);
+    }
+
+    @Override
+    public void delete(long id) {
+        mfdao.delete(id);
+    }
 }

@@ -11,4 +11,10 @@ import java.util.List;
 public interface ModelFloorService {
 
     List findAll();
- }
+    void save(String name ,String type,String remark);
+
+    void update(long id, String name, String type, String remark);
+
+
+    void delete(long id);
+}

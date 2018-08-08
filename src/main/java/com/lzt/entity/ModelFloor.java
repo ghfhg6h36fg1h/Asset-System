@@ -15,6 +15,13 @@ public class ModelFloor {
     private String type;
     private String name;
     private String remark;
+
+    public ModelFloor(){}
+    public ModelFloor(String name,String type,String remark){
+        setName(name);
+        setType(type);
+        setRemark(remark);
+    }
     public long getId() {
         return id;
     }
