@@ -29,10 +29,11 @@
                             <input type="text" class="form-control input-sm" id="keyWord" name="keyWord"
                                    placeholder="输入文字搜索"/>
                             <button class="btn btn-white btn-xs " type="submit">查 询</button>
-                            <button class="btn btn-green btn-xs" type="button" onclick="">待续保</button>
+                            <button class="btn btn-green btn-xs" type="button" onclick="baoxiu()">待续保</button>
 
                         </div>
-
+                        <span style="color: #00BDEF" >二维码地址：\\192.168.10.5</span>
+                        <button class="btn btn-green btn-xs" type="button" onclick="synchro()">同步</button>
                     </form>
 
                 </div>
@@ -59,7 +60,7 @@
                     </div>
                     <div class="tablebody">
                         <div class="row" th:each="IBM,IBMStat:${ibmList}">
-
+                            <div th:if="${IBM.state} eq '0'">
                             <div class="col-xs-2">
                                 <span th:text="${IBM.name}"></span>
                             </div>
@@ -86,8 +87,65 @@
                                         th:onclick="'javascript:DeleteIBMInfo(\''+${IBMStat.index}+'\')'">删除
                                 </button>
                             </div>
+                            </div>
 
+                            <div th:if="${IBM.state} eq '1'">
+                                <div class="col-xs-2">
+                                    <span style="color: #338ec4" th:text="${IBM.name}"></span>
+                                </div>
+                                <div class="col-xs-2">
+                                    <span style="color: #338ec4" th:text="${IBM.model1}"></span>
+                                </div>
+                                <div class="col-xs-2">
+                                    <span style="color: #338ec4" th:text="${IBM.model2}"></span>
+                                </div>
+                                <div class="col-xs-2">
+                                    <span style="color: #338ec4" th:text="${IBM.sn}"></span>
+                                </div>
+                                <div class="col-xs-2">
+                                    <span style="color: #338ec4"  th:text="${IBM.time}"></span>
+                                </div>
+                                <div class="col-xs-2">
+                                    <button class="btn btn-success btn-xs"
+                                            th:onclick="'javascript:IBMInfo(\''+${IBMStat.index}+'\')'">二维码
+                                    </button>
+                                    <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#reviseUser"
+                                            th:onclick="'javascript:UpdateIBMInfo(\''+${IBMStat.index}+'\')'">修改
+                                    </button>
+                                    <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteUser"
+                                            th:onclick="'javascript:DeleteIBMInfo(\''+${IBMStat.index}+'\')'">删除
+                                    </button>
+                                </div>
+                            </div>
 
+                            <div th:if="${IBM.state} eq '2'">
+                                <div class="col-xs-2">
+                                    <span style="color: #cd0a0a" th:text="${IBM.name}"></span>
+                                </div>
+                                <div class="col-xs-2">
+                                    <span style="color: #cd0a0a" th:text="${IBM.model1}"></span>
+                                </div>
+                                <div class="col-xs-2">
+                                    <span style="color: #cd0a0a" th:text="${IBM.model2}"></span>
+                                </div>
+                                <div class="col-xs-2">
+                                    <span style="color: #cd0a0a" th:text="${IBM.sn}"></span>
+                                </div>
+                                <div class="col-xs-2">
+                                    <span style="color: #cd0a0a" th:text="${IBM.time}"></span>
+                                </div>
+                                <div class="col-xs-2">
+                                    <button class="btn btn-success btn-xs"
+                                            th:onclick="'javascript:IBMInfo(\''+${IBMStat.index}+'\')'">二维码
+                                    </button>
+                                    <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#reviseUser"
+                                            th:onclick="'javascript:UpdateIBMInfo(\''+${IBMStat.index}+'\')'">修改
+                                    </button>
+                                    <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteUser"
+                                            th:onclick="'javascript:DeleteIBMInfo(\''+${IBMStat.index}+'\')'">删除
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -99,6 +157,18 @@
                         location.href = "/ALLIBMQR";
                     }
                 </script>
+                <!--同步-->
+                    <script>
+                    function synchro() {
+                        location.href="/synchro";
+                    }
+                </script>
+                <!--保修-->
+                <script>
+                    function baoxiu() {
+                        location.href="/IBM?st=1";
+                    }
+                    </script>
                 <!--二维码-->
                 <script th:inline="javascript" type="text/javascript">
                     function IBMInfo(index) {

@@ -18,6 +18,7 @@ public class IBM {
     private String model2;
     private String sn;
     private String time;
+    private String state;
 
     public IBM(){}
     public IBM(String name,String model1 ,String model2,String sn,String time)
@@ -74,5 +75,13 @@ public class IBM {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }

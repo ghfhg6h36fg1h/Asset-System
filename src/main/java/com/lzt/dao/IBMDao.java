@@ -14,17 +14,17 @@ import java.util.List;
 public interface IBMDao {
 
     @Select("select * from tb2_ibm where " +
-            "(model1 like '%' #{keyword} '%')or(model2 like '%' #{keyword} '%')or" +
-            "(name like '%' #{keyword} '%' )or(sn like '%' #{keyword} '%' )" +
-            " limit #{page},#{printNumber}")
-    List<IBM> findIBMByPage(@Param("page")long page, @Param("printNumber")int printNumber, @Param("keyword")String keyWord);
+            "((model1 like '%' #{keyword} '%')or(model2 like '%' #{keyword} '%')or" +
+            "(name like '%' #{keyword} '%' )or(sn like '%' #{keyword} '%' ))" +
+            "and(state like '%' #{state} '%' )"+" limit #{page},#{printNumber}")
+    List<IBM> findIBMByPage(@Param("page")long page, @Param("printNumber")int printNumber, @Param("keyword")String keyWord,@Param("state")String state);
 
 
 
     @Select("select count(*) from tb2_ibm where"+
-            "(model1 like '%' #{keyword} '%')or(model2 like '%' #{keyword} '%')or"+
-            "(name like '%' #{keyword} '%' )or(sn like '%' #{keyword} '%' )")
-    long finCount(@Param("keyword")String keyWord);
+            "((model1 like '%' #{keyword} '%')or(model2 like '%' #{keyword} '%')or"+
+            "(name like '%' #{keyword} '%' )or(sn like '%' #{keyword} '%' ))and(state like '%' #{state} '%' )")
+    long finCount(@Param("keyword")String keyWord,@Param("state")String state);
 
     @Select("select * from tb2_ibm where id=#{id}")
     IBM findIBMById(@Param("id")long id);

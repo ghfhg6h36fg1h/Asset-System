@@ -34,7 +34,7 @@ public class IBMServiceImpl implements IBMService {
     private IBMDao ibmDao;
 
     @Override
-    public HashMap findIBMByPage(String tempPage, String jumpPage, String type, String keyWord, HttpServletRequest request) {
+    public HashMap findIBMByPage(String tempPage, String jumpPage, String type, String keyWord, String state,HttpServletRequest request) {
 
         HttpSession session = request.getSession();
         long currentPage;  //当前页
@@ -44,6 +44,8 @@ public class IBMServiceImpl implements IBMService {
         if (tempPage == null && jumpPage == null) { //初始当前页
             currentPage = 1;
             session.setAttribute("keyword", "");
+            if (state==null)
+            state="";
 
         } else if (tempPage != null) {//获取当前页 +1或-1
             int page = Integer.parseInt(tempPage);
@@ -65,14 +67,15 @@ public class IBMServiceImpl implements IBMService {
 
         keyWord = (String) session.getAttribute("keyword");
 
-        Allpage = this.Findcount(keyWord) / PrintNumber + 1;
+        Allpage = this.Findcount(keyWord,state) / PrintNumber + 1;
 
 //防呆
         if (currentPage > Allpage) currentPage = Allpage;
         if (currentPage <= 0) currentPage = 1;
 
         long StatNumber = (currentPage - 1) * PrintNumber;
-        List<IBM> ibmList = ibmDao.findIBMByPage(StatNumber, PrintNumber, keyWord);
+
+        List<IBM> ibmList = ibmDao.findIBMByPage(StatNumber, PrintNumber, keyWord,state);
 
         HashMap map = new HashMap();
         map.put("ibmList", ibmList);
@@ -83,8 +86,8 @@ public class IBMServiceImpl implements IBMService {
     }
 
     @Override
-    public long Findcount(String keyWord) {
-        return ibmDao.finCount(keyWord);
+    public long Findcount(String keyWord,String state) {
+        return ibmDao.finCount(keyWord,state);
     }
 
     @Override

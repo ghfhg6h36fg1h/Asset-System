@@ -2,9 +2,9 @@ package com.lzt.SampleController;
 
 import com.google.zxing.WriterException;
 import com.lzt.entity.IBM;
+import com.lzt.serivice.CommonFunctionService;
 import com.lzt.serivice.IBMJpaService;
 import com.lzt.serivice.IBMService;
-import com.lzt.serivice.ModelFloorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,14 +34,18 @@ public class IBMController {
     @Autowired
     IBMJpaService ibmJpaService;
 
+    @Autowired
+    CommonFunctionService cfs;
+
     @RequestMapping("/IBM")
     public String GetPCList(Model model) {
         String tempPage = request.getParameter("page");  //获取页码
         String jumpPage = request.getParameter("jumpPage");//获取跳转页码
         String type = request.getParameter("type");//获取页码类型
         String keyWord = request.getParameter("keyWord");//获取关键字
+        String state=request.getParameter("st");//获取状态值
 
-        HashMap map = ibmService.findIBMByPage(tempPage, jumpPage, type, keyWord, request);
+        HashMap map = ibmService.findIBMByPage(tempPage, jumpPage, type, keyWord,state, request);
 
         List<IBM> ibmList = (List<IBM>) map.get("ibmList");
         model.addAttribute("ibmList", ibmList);
@@ -115,4 +120,9 @@ public class IBMController {
         return "redirect:/IBM";
     }
 
+    @RequestMapping("/synchro")
+    public String synchro() throws ParseException {
+     cfs.synchro();
+        return "redirect:/IBM";
+    }
 }

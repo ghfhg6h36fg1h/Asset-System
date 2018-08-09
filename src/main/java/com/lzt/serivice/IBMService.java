@@ -14,10 +14,10 @@ import java.util.List;
  */
 public interface IBMService {
 
-    HashMap findIBMByPage(String tempPage, String jumpPage, String type, String keyWord, HttpServletRequest request);
+    HashMap findIBMByPage(String tempPage, String jumpPage, String type, String keyWord,String state, HttpServletRequest request);
 
 
-    long Findcount(String keyWord);
+    long Findcount(String keyWord,String state);
 
     IBM findByID(long id);
 
