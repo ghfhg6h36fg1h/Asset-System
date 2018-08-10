@@ -45,7 +45,7 @@ public class IBMServiceImpl implements IBMService {
             currentPage = 1;
             session.setAttribute("keyword", "");
             if (state==null)
-            state="";
+                session.setAttribute("state", "");
 
         } else if (tempPage != null) {//获取当前页 +1或-1
             int page = Integer.parseInt(tempPage);
@@ -64,8 +64,11 @@ public class IBMServiceImpl implements IBMService {
         // 分页多条件缓存
         if (keyWord != null)
             session.setAttribute("keyword", keyWord);
+        if (state != null)
+            session.setAttribute("state", state);
 
         keyWord = (String) session.getAttribute("keyword");
+        state = (String) session.getAttribute("state");
 
         Allpage = this.Findcount(keyWord,state) / PrintNumber + 1;
 
@@ -74,6 +77,7 @@ public class IBMServiceImpl implements IBMService {
         if (currentPage <= 0) currentPage = 1;
 
         long StatNumber = (currentPage - 1) * PrintNumber;
+
 
         List<IBM> ibmList = ibmDao.findIBMByPage(StatNumber, PrintNumber, keyWord,state);
 

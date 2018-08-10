@@ -28,6 +28,7 @@ public class IBM {
         setModel2(model2);
         setSn(sn);
         setTime(time);
+        setState("0");
     }
     public long getId() {
         return id;
