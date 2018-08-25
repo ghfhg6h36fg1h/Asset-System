@@ -46,11 +46,14 @@ public class CommonFunctionServiceImpl implements CommonFunctionService {
         System.out.println("开始同步…………");
         List<IBM> ibmlist = ibmService.findAll();
         List<String> namelist = new ArrayList<String>();
+        StringBuffer message = new StringBuffer();
+        message.append("您好!<br>");
         for (IBM ibm : ibmlist) {
-            long days=0;
+            long days = 0;
             try {
-                 days = getDay(ibm.getTime());
-            }catch (Exception e){}
+                days = getDay(ibm.getTime());
+            } catch (Exception e) {
+            }
 
             if (days <= 0) //过期
                 ibm.setState("2");
@@ -58,22 +61,16 @@ public class CommonFunctionServiceImpl implements CommonFunctionService {
             {
                 ibm.setState("1");
                 if (ibm.getName() != null)
-                    namelist.add(ibm.getName());
+                    message.append(ibm.getName()+ "还有 " + "<span style=\"color: red\">"+days +"</span>"+ "天过保 <br>");
             } else//大于3个月
                 ibm.setState("0");
             ibmdao.save(ibm); //update
         }
 
-        if (namelist != null) { //设置邮件内容
-            StringBuffer message = new StringBuffer();
-           message.append("您好!");
-            for (String name : namelist) {
-                message.append(name+"  ");
-            }
-            message.append("将要过保 请及时续保 ");
-            sendEmail(message.toString());
+        message.append("请及时续保! ");
+        sendEmail(message.toString());
 
-        }
+
         System.out.println("同步结束");
     }
 
@@ -94,10 +91,10 @@ public class CommonFunctionServiceImpl implements CommonFunctionService {
         BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
         ThreadPoolExecutor executor = new ThreadPoolExecutor(8, 12, 15, TimeUnit.MILLISECONDS,
                 workQueue, new ThreadPoolExecutor.CallerRunsPolicy());
-        EmailFast ef=new EmailFast(str);
+        EmailFast ef = new EmailFast(str); //邮件提醒
         executor.execute(ef);
-        System.out.println("线程池中线程数目："+executor.getPoolSize()+"，队列中等待执行的任务数目："+
-                executor.getQueue().size()+"，已执行玩别的任务数目："+executor.getCompletedTaskCount());
+        System.out.println("线程池中线程数目：" + executor.getPoolSize() + "，队列中等待执行的任务数目：" +
+                executor.getQueue().size() + "，已执行玩别的任务数目：" + executor.getCompletedTaskCount());
 
 
     }

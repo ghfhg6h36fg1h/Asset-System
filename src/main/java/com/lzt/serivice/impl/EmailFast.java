@@ -34,8 +34,9 @@ public class EmailFast implements Runnable {
         MimeMessageHelper messageHelper = new MimeMessageHelper(mailMessage);
         // 设置收件人，寄件人
         try {
-            messageHelper.setTo("guxianghai@sh-liangxin.com");
-
+            String[] to={"liyeting@sh-liangxin.com","liangzhuotong@sh-liangxin.com"
+            ,"wangzhiming@sh-liangxin.com"};
+            messageHelper.setTo("liangzhuotong@sh-liangxin.com");
             messageHelper.setFrom("liangzhuotong@sh-liangxin.com");
             messageHelper.setSubject("续保提醒");
             // true 表示启动HTML格式的邮件

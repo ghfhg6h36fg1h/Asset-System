@@ -5,6 +5,8 @@ import com.lzt.entity.IBM;
 import com.lzt.serivice.CommonFunctionService;
 import com.lzt.serivice.IBMJpaService;
 import com.lzt.serivice.IBMService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,9 +39,14 @@ public class IBMController {
 
     @Autowired
     CommonFunctionService cfs;
-
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     @RequestMapping("/IBM")
     public String GetPCList(Model model) {
+
+
+        logger.info("查找IBM");
+        logger.debug("debug测试");
+        logger.error("error测试");
         String tempPage = request.getParameter("page");  //获取页码
         String jumpPage = request.getParameter("jumpPage");//获取跳转页码
         String type = request.getParameter("type");//获取页码类型
