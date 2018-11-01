@@ -9,6 +9,8 @@ import com.google.zxing.common.BitMatrix;
 import com.lzt.dao.IBMDao;
 import com.lzt.entity.IBM;
 import com.lzt.serivice.IBMService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,8 @@ import java.util.Map;
  */
 @Service
 public class IBMServiceImpl implements IBMService {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static final int PrintNumber = 50;
     @Autowired
@@ -112,8 +116,15 @@ public class IBMServiceImpl implements IBMService {
         BitMatrix bitMatrix = new MultiFormatWriter().encode(content,
                 BarcodeFormat.QR_CODE, width, height, hints);// 生成矩阵
         Path path = FileSystems.getDefault().getPath(filePath, fileName);
-        MatrixToImageWriter.writeToPath(bitMatrix, format, path);// 输出图像
-        System.out.println(ibm.getName() + "  输出成功.");
+        try {
+            MatrixToImageWriter.writeToPath(bitMatrix, format, path);// 输出图像
+        }catch (Exception e)
+        {
+            logger.error("找不到路径");
+            e.printStackTrace();
+        }
+        logger.info(ibm.getName() + "  输出成功.");
+
       //  File file = new File(filePath+fileName);
       //  file.delete();
       //  System.out.println(filePath+fileName+" 删除成功");

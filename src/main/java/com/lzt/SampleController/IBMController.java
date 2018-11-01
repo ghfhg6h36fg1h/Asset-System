@@ -43,10 +43,6 @@ public class IBMController {
     @RequestMapping("/IBM")
     public String GetPCList(Model model) {
 
-
-        logger.info("查找IBM");
-        logger.debug("debug测试");
-        logger.error("error测试");
         String tempPage = request.getParameter("page");  //获取页码
         String jumpPage = request.getParameter("jumpPage");//获取跳转页码
         String type = request.getParameter("type");//获取页码类型

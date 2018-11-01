@@ -1,4 +1,4 @@
-package com.lzt.serivice.impl;
+package com.lzt;
 
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -10,10 +10,12 @@ import java.util.Properties;
 /**
  * Created by Enzo Cotter on 2018/8/11.
  */
-public class EmailFast implements Runnable {
-    private  String str;
-    public EmailFast(String str){
-        this.str=str;
+public class EmailTask implements Runnable{
+
+    private  int num;
+    public EmailTask(int num)
+    {
+          this.num=num;
     }
     @Override
     public void run() {
@@ -34,17 +36,16 @@ public class EmailFast implements Runnable {
         MimeMessageHelper messageHelper = new MimeMessageHelper(mailMessage);
         // 设置收件人，寄件人
         try {
-            String[] to={"liyeting@sh-liangxin.com","liangzhuotong@sh-liangxin.com"
-            ,"guxianghai@sh-liangxin.com"};
-            messageHelper.setTo(to);
-            messageHelper.setFrom("liangzhuotong@sh-liangxin.com");
-            messageHelper.setSubject("续保提醒");
-            // true 表示启动HTML格式的邮件
-            messageHelper.setText(str, true);
+            messageHelper.setTo("liyeting@sh-liangxin.com");
+
+        messageHelper.setFrom("liangzhuotong@sh-liangxin.com");
+        messageHelper.setSubject("Attack-Email");
+        // true 表示启动HTML格式的邮件
+        messageHelper.setText("I Will Attack You", true);
         } catch (MessagingException e) {
             e.printStackTrace();
         }
         senderImpl.send(mailMessage);
-
+System.out.println(num+"success");
     }
 }
