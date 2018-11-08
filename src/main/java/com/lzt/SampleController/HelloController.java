@@ -1,22 +1,30 @@
 package com.lzt.SampleController;
 
-import com.lzt.dao.UserDao;
-import com.lzt.entity.User;
+import com.alibaba.fastjson.JSONObject;
+
 import com.lzt.serivice.UserService;
+import org.omg.CORBA.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+
 
 
 //Controller 单独可跳转页面
 //RestController == Controller+ResponseBody 是无法跳转页面的
  @Controller
 public class HelloController {
+
+
 
 	@Autowired  // @Qualifier("") 指定实现类
 	private UserService userservice  ;
@@ -32,50 +40,27 @@ public String Verify(HttpServletRequest Request){
  	    String username=Request.getParameter("Name");
         String truePassword=userservice.findPassByName(username);
 
+	HttpSession session=Request.getSession();
+	session.setAttribute("loginName",username);
+
 if (password.equals(truePassword))
- 	    return "MainPage";
+	return "redirect:/PC";
+ 	 //   return "MainPage";
 else
-    return "E404";
+    return "Welcome";
 }
     @RequestMapping("/Record")
     public String Record() {
 
         return "record";
     }
-    	/*
-	@RequestMapping("/register")
-	public String register() {
- 		return "register";
- 	}
-	@RequestMapping("/index")
-	public String index() {
- 	    return "index";
+
+	@RequestMapping(value = "/getLogin", method = RequestMethod.GET)
+	@ResponseBody
+	public JSONObject addPC(HttpServletRequest Request) throws ServletException, IOException {
+		JSONObject result = new JSONObject();
+		HttpSession session=Request.getSession();
+		result.put("loginName",session.getAttribute("loginName"));
+		return result;
 	}
-
- @RequestMapping("/getList")
-public String GetUserList(Model model){
-
-        List<User> userList =new ArrayList<User>();
-     //    userList=(List<User>) userdao.findAll();
-         model.addAttribute("users",userList);
-         return "showlist";
-}
-	@RequestMapping("/AddRegister")
-	public String register(HttpServletRequest request){
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		String password2 = request.getParameter("password2");
-		if (password.equals(password2)){
-			User userEntity = new User();
-			userEntity.setUsername(username);
-			userEntity.setPassword(password);
-		//	userdao.save(userEntity);
-			long i=2;
-			return "index";
-		}else {
-			return "register";
-		}
 	}
-*/
-
-}

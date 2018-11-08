@@ -1,6 +1,7 @@
 package com.lzt.serivice.impl;
 
-import com.lzt.dao.PcDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.lzt.dao.PcJpaDao;
 import com.lzt.entity.PC;
 import com.lzt.serivice.PcJpaService;
@@ -15,6 +16,8 @@ import java.util.List;
 @Service
 public class PcJpaServiceImpl implements PcJpaService {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private PcJpaDao pcJpadao;
     @Override
@@ -22,6 +25,7 @@ public class PcJpaServiceImpl implements PcJpaService {
                      String mac,String sn,String number,String floor,String state) {
 
         pcJpadao.save(new PC(pcName,model,name,asset,mac,sn,number,floor,state));
+        logger.info( pcName + " " +name+" 保存成功.");
 
     }
 
@@ -37,6 +41,6 @@ public class PcJpaServiceImpl implements PcJpaService {
        PC pc=new PC(pcName,model,name,asset,mac,sn,number,floor,state);
        pc.setId(id);
         pcJpadao.save(pc);
-
+        logger.info( pcName + " " +name+ " 修改成功.");
     }
 }

@@ -20,8 +20,12 @@
                 <div class="check-div form-inline">
 
                     <div class="col-xs-3">
-                        <button class="btn btn-yellow btn-xs" data-toggle="modal" data-target="#addUser">添加PC</button>
-                        <button class="btn btn-green btn-xs" type="submit" onclick="ALLQR()">批量生成二维码</button>
+                        <button id="addButton" class="btn btn-yellow btn-xs" data-toggle="modal" data-target="#addUser">
+                            添加PC
+                        </button>
+                        <button id="ptButton" class="btn btn-green btn-xs" type="submit" onclick="ALLQR()">批量生成二维码
+                        </button>
+
 
                     </div>
 
@@ -30,11 +34,12 @@
                             <input type="text" class="form-control input-sm" id="keyWord" name="keyWord"
                                    placeholder="输入文字搜索" th:value="${keyWord}"/>
                             <button class="btn btn-white btn-xs " type="submit">查 询</button>
-                            <button class="btn btn-green btn-xs" type="button" onclick="Allocation()" >调 拨</button>
+                            <button class="btn btn-green btn-xs" type="button" onclick="Allocation()">调 拨</button>
+                            <button class="btn btn-green btn-xs" type="button" onclick="SelectAllPC()">简 查</button>
 
                         </div>
-
                     </form>
+
 
                     <div class="col-lg-3 col-lg-offset-2 col-xs-4" style=" padding-right: 40px;text-align: right;">
                         <label for="paixu">排序:&nbsp;</label>
@@ -46,6 +51,8 @@
                         </select>
                     </div>
                 </div>
+
+
                 <div class="data-div">
                     <div class="row tableHeader">
                         <div class="col-xs-2 ">
@@ -58,10 +65,10 @@
                             型号
                         </div>
                         <div class="col-xs-2">
-                            姓名
+                            使用人
                         </div>
                         <div class="col-xs-2">
-                            资产编号
+                            描述
                         </div>
                         <div class="col-xs-2">
                             操作
@@ -70,60 +77,82 @@
                     <div class="tablebody">
                         <div class="row" th:each="pc,pcStat:${PCs}">
                             <div th:if="${pc.state} eq '0'">
-                            <div class="col-xs-2">
-                                <span style="color: #cd0a0a" th:text="${pc.PCName}"></span>
-                            </div>
-                            <div class="col-xs-2">
-                                <span style="color: #cd0a0a" th:text="${pc.Floor}"></span>
-                            </div>
-                            <div class="col-xs-2">
-                                <span style="color: #cd0a0a" th:text="${pc.Model}"></span>
-                            </div>
-                            <div class="col-xs-2">
-                                <span style="color: #cd0a0a" th:text="${pc.username}"></span>
-                            </div>
-                            <div class="col-xs-2">
-                                <span style="color: #cd0a0a" th:text="${pc.AssetNumber}"></span>
-                            </div>
-                            <div class="col-xs-2">
-                                <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#Select"
-                                        th:onclick="'javascript:PCInfo(\''+${pcStat.index}+'\')'">详情
-                                </button>
-                                <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#reviseUser"
-                                        th:onclick="'javascript:UpdatePCInfo(\''+${pcStat.index}+'\')'">修改
-                                </button>
-                                <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteUser"
-                                        th:onclick="'javascript:DeletePCInfo(\''+${pcStat.index}+'\')'">删除
-                                </button>
-                            </div>
+                                <div class="col-xs-2">
+                                    <span id="IFHavePC" name="IFHavePC" style="color: #cd0a0a"
+                                          th:text="${pc.PCName}"></span>
+                                </div>
+                                <div class="col-xs-2">
+                                    <span style="color: #cd0a0a" th:text="${pc.Floor}"></span>
+                                </div>
+                                <div class="col-xs-2">
+                                    <span style="color: #cd0a0a" th:text="${pc.Model}"></span>
+                                </div>
+                                <div class="col-xs-2">
+                                    <span style="color: #cd0a0a" th:text="${pc.username}"></span>
+                                </div>
+                                <div class="col-xs-2">
+                                    <span style="color: #cd0a0a" th:text="${pc.AssetNumber}"></span>
+                                </div>
+                                <div th:if="${loginName} eq 'admin'">
+                                    <div class="col-xs-2">
+                                        <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#Select"
+                                                th:onclick="'javascript:PCInfo(\''+${pcStat.index}+'\')'">详情
+                                        </button>
+                                        <button class="btn btn-success btn-xs" data-toggle="modal"
+                                                data-target="#reviseUser"
+                                                th:onclick="'javascript:UpdatePCInfo(\''+${pcStat.index}+'\')'">修改
+                                        </button>
+                                        <button class="btn btn-danger btn-xs" data-toggle="modal"
+                                                data-target="#deleteUser"
+                                                th:onclick="'javascript:DeletePCInfo(\''+${pcStat.index}+'\')'">删除
+                                        </button>
+                                    </div>
+
+                                </div>
+                                <div th:if="${loginName} ne 'admin'">
+                                    <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#Select"
+                                            th:onclick="'javascript:PCInfo(\''+${pcStat.index}+'\')'">详情
+                                    </button>
+                                </div>
+
                             </div>
                             <div th:if="${pc.state} ne '0'">
                                 <div class="col-xs-2">
-                                    <span  th:text="${pc.PCName}"></span>
+                                    <span th:text="${pc.PCName}"></span>
                                 </div>
                                 <div class="col-xs-2">
-                                    <span  th:text="${pc.Floor}"></span>
+                                    <span th:text="${pc.Floor}"></span>
                                 </div>
                                 <div class="col-xs-2">
-                                    <span  th:text="${pc.Model}"></span>
+                                    <span th:text="${pc.Model}"></span>
                                 </div>
                                 <div class="col-xs-2">
                                     <span th:text="${pc.username}"></span>
                                 </div>
                                 <div class="col-xs-2">
-                                    <span  th:text="${pc.AssetNumber}"></span>
+                                    <span th:text="${pc.AssetNumber}"></span>
                                 </div>
-                                <div class="col-xs-2">
+                                <div th:if="${loginName} eq 'admin'">
+                                    <div class="col-xs-2">
+                                        <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#Select"
+                                                th:onclick="'javascript:PCInfo(\''+${pcStat.index}+'\')'">详情
+                                        </button>
+                                        <button class="btn btn-success btn-xs" data-toggle="modal"
+                                                data-target="#reviseUser"
+                                                th:onclick="'javascript:UpdatePCInfo(\''+${pcStat.index}+'\')'">修改
+                                        </button>
+                                        <button class="btn btn-danger btn-xs" data-toggle="modal"
+                                                data-target="#deleteUser"
+                                                th:onclick="'javascript:DeletePCInfo(\''+${pcStat.index}+'\')'">删除
+                                        </button>
+                                    </div>
+                                </div>
+                                <div th:if="${loginName} ne 'admin'">
                                     <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#Select"
                                             th:onclick="'javascript:PCInfo(\''+${pcStat.index}+'\')'">详情
                                     </button>
-                                    <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#reviseUser"
-                                            th:onclick="'javascript:UpdatePCInfo(\''+${pcStat.index}+'\')'">修改
-                                    </button>
-                                    <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteUser"
-                                            th:onclick="'javascript:DeletePCInfo(\''+${pcStat.index}+'\')'">删除
-                                    </button>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -132,11 +161,58 @@
                 <!--调拨-->
                 <script>
                     function Allocation() {
-                     //   document.getElementById("state").value='0';
-                         location.href = "/PC?st=0";
-
+                        //   document.getElementById("state").value='0';
+                        location.href = "/PC?st=0";
+                        //   $('#reviseUser').modal('show');
+                        //   $('#addUser').modal('show');
+                        //    document.getElementById("updateInfo_userName").value ="5555";
                     }
                 </script>
+                <!--查询-->
+                <script>
+                    function SelectAllPC() {
+                        var keyword = document.getElementById("keyWord").value;
+
+                        $.ajax({
+                            url: "/QuickPC",
+                            async: false,
+                            type: "GET",
+                            data: {
+                                keyword: keyword
+                            },
+                            success: function (res) {
+
+                                console.log(res)
+                                if (res.success == false) {
+
+                                    document.getElementById("add_pcName").value = keyword;
+                                    $('#addUser').modal('show');
+                                }
+                                else {
+                                    document.getElementById("updateInfo_PCID").value = res.pclist[0].id;
+                                    document.getElementById("updateInfo_PCname").value = res.pclist[0].pcname;
+                                    document.getElementById("updateInfo_floor").value = res.pclist[0].floor;
+                                    document.getElementById("updateInfo_model").value = res.pclist[0].model;
+                                    document.getElementById("updateInfo_userName").value = res.pclist[0].username;
+                                    document.getElementById("updateInfo_AssetNumber").value = res.pclist[0].assetNumber;
+                                    document.getElementById("updateInfo_MAC").value = res.pclist[0].mac;
+                                    document.getElementById("updateInfo_SN").value = res.pclist[0].sn;
+                                    document.getElementById("updateInfo_userNumber").value = res.pclist[0].userNumber;
+                                    var p = res.pclist[0].state;
+                                    $("input[id='updateInfo_state']").eq(p).click();
+
+                                    $('#reviseUser').modal('show');
+                                }
+                            },
+                        });
+
+
+                        //   $('#reviseUser').modal('show');
+                        //   $('#addUser').modal('show');
+                        //    document.getElementById("updateInfo_userName").value ="5555";
+                    }
+                </script>
+
 
                 <!--批量二维码-->
                 <script>
@@ -147,8 +223,8 @@
                 <!--排序选择-->
                 <script>
                     function Sort() {
-                         var Svalue = document.getElementById("sort").value;
-                        location.href = "/PC?ss="+Svalue ;
+                        var Svalue = document.getElementById("sort").value;
+                        location.href = "/PC?ss=" + Svalue;
                     }
                 </script>
                 <!--详情模态框传值-->
@@ -236,7 +312,10 @@
                                                 <select id="add_model" class=" form-control select-duiqi">
                                                     <div th:each="mf:${mflist}">
                                                         <div th:if="${mf.type} eq '1'">
-                                                            <option th:value="${mf.name}"><span th:text="${mf.name}"></span></option>
+                                                            <option th:value="${mf.name}">
+
+                                                                <span
+                                                                        th:text="${mf.name}"></span></option>
                                                         </div>
                                                     </div>
                                                 </select>
@@ -244,14 +323,14 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="sOrd" class="col-xs-3 control-label">姓名</label>
+                                            <label for="sOrd" class="col-xs-3 control-label">使用人</label>
                                             <div class="col-xs-8">
                                                 <input type="" class="form-control input-sm duiqi" id="add_name"
                                                        placeholder=""/>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="sKnot" class="col-xs-3 control-label">资产编号</label>
+                                            <label for="sKnot" class="col-xs-3 control-label">描述</label>
                                             <div class="col-xs-8">
                                                 <input type="" class="form-control input-sm duiqi" id="add_asset"
                                                        placeholder=""/>
@@ -272,7 +351,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="sKnot" class="col-xs-3 control-label">工号</label>
+                                            <label for="sKnot" class="col-xs-3 control-label">USB</label>
                                             <div class="col-xs-8">
                                                 <input type="" class="form-control input-sm duiqi" id="add_number"
                                                        placeholder=""/>
@@ -283,9 +362,10 @@
                                             <div class="col-xs-8">
                                                 <select id="add_floor" class=" form-control select-duiqi">
                                                     <div th:each="mf:${mflist}">
-                                                    <div th:if="${mf.type} eq '0'">
-                                                    <option th:value="${mf.name}"><span th:text="${mf.name}"></span></option>
-                                                    </div>
+                                                        <div th:if="${mf.type} eq '0'">
+                                                            <option th:value="${mf.name}"><span
+                                                                    th:text="${mf.name}"></span></option>
+                                                        </div>
                                                     </div>
                                                 </select>
                                             </div>
@@ -369,7 +449,7 @@
 
                         $.ajax({
                             url: str,
-                            async: true,
+                            async: false,
                             type: "POST",
                             data: {
                                 id: id, pcName: pcName, model: model, name: name, asset: asset, mac: mac,
@@ -378,12 +458,11 @@
                             success: function () {
                                 alert("修改成功，建议更新二维码");
                             },
-                            error:function(){
-                                alert("error");
+                            error: function () {
+                                alert("请重新检查是否成功");
                             }
                         });
-                        <!--异步的时候 后面加个执行语句拖延时间，为了在刷新页面之前得到回调 -->
-                        form.updateInfo_floor.value="";
+
                     }
                 </script>
                 <!--删除PC AJAX-->
@@ -393,7 +472,7 @@
                         var str = "/DeletePC";
                         $.ajax({
                             url: str,
-                            async: true,
+                            async: false,
                             type: "POST",
                             data: {id: id},
 
@@ -412,6 +491,28 @@
                             data: {id: id},
 
                         });
+                    }
+                </script>
+                <!--权限控制 -->
+                <script>
+                    window.onload = function () {
+
+                        $.ajax({
+                            url: "/getLogin",
+                            async: false,
+                            type: "GET",
+                            data: {},
+                            success: function (res) {
+                                console.log(res.loginName)
+
+                                if (res.loginName != "admin") {
+                                    $("#addButton").hide();
+                                    $("#ptButton").hide();
+                                }
+                            },
+
+                        });
+
                     }
                 </script>
 
@@ -442,7 +543,8 @@
                                                 <select id="updateInfo_floor" class=" form-control select-duiqi">
                                                     <div th:each="mf:${mflist}">
                                                         <div th:if="${mf.type} eq '0'">
-                                                            <option th:value="${mf.name}"><span th:text="${mf.name}"></span></option>
+                                                            <option th:value="${mf.name}"><span
+                                                                    th:text="${mf.name}"></span></option>
                                                         </div>
                                                     </div>
                                                 </select>
@@ -454,7 +556,8 @@
                                                 <select id="updateInfo_model" class=" form-control select-duiqi">
                                                     <div th:each="mf:${mflist}">
                                                         <div th:if="${mf.type} eq '1'">
-                                                            <option  th:value="${mf.name}"><span th:text="${mf.name}"></span></option>
+                                                            <option th:value="${mf.name}"><span
+                                                                    th:text="${mf.name}"></span></option>
                                                         </div>
                                                     </div>
                                                 </select>
@@ -462,14 +565,14 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="sKnot" class="col-xs-3 control-label">姓名：</label>
+                                            <label for="sKnot" class="col-xs-3 control-label">使用人：</label>
                                             <div class="col-xs-8">
                                                 <input type="" class="form-control input-sm duiqi"
                                                        id="updateInfo_userName" placeholder=""/>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="sKnot" class="col-xs-3 control-label">资产编号：</label>
+                                            <label for="sKnot" class="col-xs-3 control-label">描述：</label>
                                             <div class="col-xs-8">
                                                 <input type="" class="form-control input-sm duiqi"
                                                        id="updateInfo_AssetNumber" placeholder=""/>
@@ -490,7 +593,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="sKnot" class="col-xs-3 control-label">工号：</label>
+                                            <label for="sKnot" class="col-xs-3 control-label">USB：</label>
                                             <div class="col-xs-8">
                                                 <input type="" class="form-control input-sm duiqi"
                                                        id="updateInfo_userNumber" placeholder=""/>
@@ -501,7 +604,7 @@
                                             <div class="col-xs-8">
                                                 <label class="control-label" for="anniu">
                                                     <input type="radio" name="updateInfo_state" id="updateInfo_state"
-                                                           value="0"/>待调拨</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                           value="0"/>待拨</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 <label class="control-label" for="meun">
                                                     <input type="radio" name="updateInfo_state" id="updateInfo_state"
                                                            value="1"/> 正常</label>
@@ -537,7 +640,8 @@
                                         <div class="form-group ">
                                             <label for="sName" class="col-xs-3 control-label">PC名：</label>
                                             <div class="col-xs-8 ">
-                                                <input  style="color: #2d2d2d" readonly="readonly" class="form-control input-sm duiqi" id="modelInfo_PCname"
+                                                <input style="color: #2d2d2d" readonly="readonly"
+                                                       class="form-control input-sm duiqi" id="modelInfo_PCname"
                                                        placeholder=""/>
                                                 <input type="hidden" class="form-control input-sm duiqi"
                                                        id="modelInfo_ID" placeholder=""/>
@@ -547,49 +651,56 @@
                                         <div class="form-group">
                                             <label for="sLink" class="col-xs-3 control-label">楼层：</label>
                                             <div class="col-xs-8 ">
-                                                <input style="color: #2d2d2d" readonly="readonly" id="modelInfo_floor" class="form-control input-sm duiqi"
+                                                <input style="color: #2d2d2d" readonly="readonly" id="modelInfo_floor"
+                                                       class="form-control input-sm duiqi"
                                                        placeholder=""/>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="sOrd" class="col-xs-3 control-label">型号：</label>
                                             <div class="col-xs-8">
-                                                <input style="color: #2d2d2d" readonly="readonly" class="form-control input-sm duiqi" id="modelInfo_Model"
+                                                <input style="color: #2d2d2d" readonly="readonly"
+                                                       class="form-control input-sm duiqi" id="modelInfo_Model"
                                                        placeholder=""/>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="sKnot" class="col-xs-3 control-label">姓名：</label>
+                                            <label for="sKnot" class="col-xs-3 control-label">使用人：</label>
                                             <div class="col-xs-8">
-                                                <input style="color: #2d2d2d" readonly="readonly" class="form-control input-sm duiqi"
+                                                <input style="color: #2d2d2d" readonly="readonly"
+                                                       class="form-control input-sm duiqi"
                                                        id="modelInfo_userName" placeholder=""/>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="sKnot" class="col-xs-3 control-label">资产编号：</label>
+                                            <label for="sKnot" class="col-xs-3 control-label">描述：</label>
                                             <div class="col-xs-8">
-                                                <input style="color: #2d2d2d" readonly="readonly" class="form-control input-sm duiqi"
+                                                <input style="color: #2d2d2d" readonly="readonly"
+                                                       class="form-control input-sm duiqi"
                                                        id="modelInfo_AssetNumber" placeholder=""/>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="sKnot" class="col-xs-3 control-label">MAC：</label>
                                             <div class="col-xs-8">
-                                                <input style="color: #2d2d2d" readonly="readonly" class="form-control input-sm duiqi" id="modelInfo_MAC"
+                                                <input style="color: #2d2d2d" readonly="readonly"
+                                                       class="form-control input-sm duiqi" id="modelInfo_MAC"
                                                        placeholder=""/>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="sKnot" class="col-xs-3 control-label">SN：</label>
                                             <div class="col-xs-8">
-                                                <input style="color: #2d2d2d" readonly="readonly" class="form-control input-sm duiqi" id="modelInfo_SN"
+                                                <input style="color: #2d2d2d" readonly="readonly"
+                                                       class="form-control input-sm duiqi" id="modelInfo_SN"
                                                        placeholder=""/>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="sKnot" class="col-xs-3 control-label">工号：</label>
+                                            <label for="sKnot" class="col-xs-3 control-label">USB：</label>
                                             <div class="col-xs-8">
-                                                <input style="color: #2d2d2d" readonly="readonly" class="form-control input-sm duiqi"
+                                                <input style="color: #2d2d2d" readonly="readonly"
+                                                       class="form-control input-sm duiqi"
                                                        id="modelInfo_userNumber" placeholder=""/>
                                             </div>
                                         </div>

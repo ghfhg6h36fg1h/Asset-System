@@ -1,19 +1,12 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Title</title>
-</head>
-<body>
 
 <!-- 左侧菜单栏目块 -->
-<div th:fragment="divHead">
+<div th:fragment="divHead" xmlns:th="http://www.w3.org/1999/xhtml">
 <div class="leftMeun" id="leftMeun">
     <div id="logoDiv">
         <p id="logoP"><img id="logo" alt="A" src="images/logo.png"/><span>Asset Management</span></p>
     </div>
     <div id="personInfor">
-        <p id="userName">admin</p>
+        <span id="loginName" th:text="${loginName}"></span>
         <p>
             <a href="/">退出登录</a>
         </p>
@@ -26,5 +19,3 @@
 
 </div>
 </div>
-</body>
-</html>

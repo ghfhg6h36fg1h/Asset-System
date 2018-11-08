@@ -17,6 +17,7 @@ import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
@@ -42,22 +43,30 @@ public class IBMController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @RequestMapping("/IBM")
     public String GetPCList(Model model) {
+        HttpSession session = request.getSession();
+        String loginName=(String)session.getAttribute("loginName");
+        model.addAttribute("loginName",loginName);
 
-        String tempPage = request.getParameter("page");  //获取页码
-        String jumpPage = request.getParameter("jumpPage");//获取跳转页码
-        String type = request.getParameter("type");//获取页码类型
-        String keyWord = request.getParameter("keyWord");//获取关键字
-        String state=request.getParameter("st");//获取状态值
+        if (loginName.equals("admin")){
+            String tempPage = request.getParameter("page");  //获取页码
+            String jumpPage = request.getParameter("jumpPage");//获取跳转页码
+            String type = request.getParameter("type");//获取页码类型
+            String keyWord = request.getParameter("keyWord");//获取关键字
+            String state=request.getParameter("st");//获取状态值
 
-        HashMap map = ibmService.findIBMByPage(tempPage, jumpPage, type, keyWord,state, request);
+            HashMap map = ibmService.findIBMByPage(tempPage, jumpPage, type, keyWord,state, request);
 
-        List<IBM> ibmList = (List<IBM>) map.get("ibmList");
-        model.addAttribute("ibmList", ibmList);
-        model.addAttribute("IBMPage", map.get("Allpage"));
-        model.addAttribute("currentPage", map.get("currentPage"));
-        model.addAttribute("keyWord", map.get("keyWord"));
+            List<IBM> ibmList = (List<IBM>) map.get("ibmList");
+            model.addAttribute("ibmList", ibmList);
+            model.addAttribute("IBMPage", map.get("Allpage"));
+            model.addAttribute("currentPage", map.get("currentPage"));
+            model.addAttribute("keyWord", map.get("keyWord"));
 
-        return "IBMManagement";
+            return "IBMManagement";
+        }
+        else
+            return "guest";
+
     }
 
     @RequestMapping(value="/SaveIBM" ,method = RequestMethod.POST)
