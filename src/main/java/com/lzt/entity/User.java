@@ -17,6 +17,8 @@ public class User {
     private String username;
     @Column(name="password")
     private String password;
+    private String remark;
+    private String power;
 
     public Long getId() {
         return id;
@@ -42,4 +44,19 @@ public class User {
         this.password = password;
     }
 
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getPower() {
+        return power;
+    }
+
+    public void setPower(String power) {
+        this.power = power;
+    }
 }

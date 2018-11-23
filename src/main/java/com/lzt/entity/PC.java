@@ -24,10 +24,13 @@ public class PC {
     @Column(name="user_number")
     private String userNumber;
     private String state;
+    private String usb;
+    private String mcafee;
+    private String net;
 
     public PC(){}
     public PC(String pcName,String model,String name,String asset,
-              String mac,String sn,String number,String floor,String state)
+              String mac,String sn,String number,String floor,String state,String usb,String mcafee,String net)
     {
         setPCName(pcName);
         setModel(model);
@@ -38,6 +41,9 @@ public class PC {
         setUserNumber(number);
         setFloor(floor);
         setState(state);
+        setUsb(usb);
+        setMcafee(mcafee);
+        setNet(net);
 
     }
     public Long getId() {
@@ -119,5 +125,29 @@ public class PC {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getUsb() {
+        return usb;
+    }
+
+    public void setUsb(String usb) {
+        this.usb = usb;
+    }
+
+    public String getMcafee() {
+        return mcafee;
+    }
+
+    public void setMcafee(String mcafee) {
+        this.mcafee = mcafee;
+    }
+
+    public String getNet() {
+        return net;
+    }
+
+    public void setNet(String net) {
+        this.net = net;
     }
 }

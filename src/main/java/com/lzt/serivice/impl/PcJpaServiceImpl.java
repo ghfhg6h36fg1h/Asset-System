@@ -22,9 +22,9 @@ public class PcJpaServiceImpl implements PcJpaService {
     private PcJpaDao pcJpadao;
     @Override
     public void save(String pcName,String model,String name,String asset,
-                     String mac,String sn,String number,String floor,String state) {
+                     String mac,String sn,String number,String floor,String state,String usb,String mcafee,String net) {
 
-        pcJpadao.save(new PC(pcName,model,name,asset,mac,sn,number,floor,state));
+        pcJpadao.save(new PC(pcName,model,name,asset,mac,sn,number,floor,state,usb,mcafee,net));
         logger.info( pcName + " " +name+" 保存成功.");
 
     }
@@ -37,8 +37,8 @@ public class PcJpaServiceImpl implements PcJpaService {
     }
 
     @Override
-    public void update(long id, String pcName, String model, String name, String asset, String mac, String sn, String number, String floor, String state) {
-       PC pc=new PC(pcName,model,name,asset,mac,sn,number,floor,state);
+    public void update(long id, String pcName, String model, String name, String asset, String mac, String sn, String number, String floor, String state,String usb,String mcafee,String net) {
+       PC pc=new PC(pcName,model,name,asset,mac,sn,number,floor,state,usb,mcafee,net);
        pc.setId(id);
         pcJpadao.save(pc);
         logger.info( pcName + " " +name+ " 修改成功.");

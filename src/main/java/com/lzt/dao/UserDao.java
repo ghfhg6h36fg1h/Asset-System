@@ -14,8 +14,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserDao extends CrudRepository<User,Long> {
-    @Query(value="select password from #{#entityName} where username=?1",nativeQuery = true)
-    String findPassByName(String username);
+    @Query(value="select * from #{#entityName} where username=?1",nativeQuery = true)
+    User findByName(String username);
+
+    @Query(value="select * from #{#entityName} where id=?1",nativeQuery = true)
+    User findById(Long id);
 
     //ct password from tb2_user where username=#{username}")
     //String aaa(@Param("username") String username);

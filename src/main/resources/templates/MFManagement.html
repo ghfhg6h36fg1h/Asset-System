@@ -26,7 +26,7 @@
                             分类
                         </div>
                         <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
-                            名称
+
                         </div>
                         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                             操作
@@ -45,7 +45,7 @@
                         </div>
                         <input type="hidden" class="form-control input-sm duiqi" id="type"
                                placeholder=""/>
-                        <div id="collapseSystem" class="collapse " aria-expanded="true">
+                        <div id="collapseSystem" class="collapse in" aria-expanded="true">
                             <!--楼层管理-->
                             <div class="row">
                                 <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 levl2 ">
@@ -85,9 +85,9 @@
                                                         class="btn btn-success btn-xs" data-toggle="modal"
                                                         data-target="#changeSource">修改
                                                 </button>
-                                                <button class="btn btn-danger btn-xs" data-toggle="modal"
-                                                        th:onclick="'javascript:DeleteMFInfo(\''+${mfStat.index}+'\')'"
-                                                        data-target="#deleteSource">删除
+                                                <button class="btn btn-danger btn-xs"
+                                                        th:onclick="'javascript:DeleteMF(\''+${mfStat.index}+'\')'"
+                                                       >删除
                                                 </button>
                                             </div>
                                         </div>
@@ -118,7 +118,7 @@
                                 </div>
                             </div>
                             <!--型号折叠-->
-                            <div id="collapseSchool" class="collapse ">
+                            <div id="collapseSchool" class="collapse " >
 
                                 <div th:each="mf,mfStat:${mflist}">
                                     <div th:if="${mf.type} eq '1'">
@@ -134,15 +134,75 @@
                                                         class="btn btn-success btn-xs" data-toggle="modal"
                                                         data-target="#changeSource">修改
                                                 </button>
-                                                <button class="btn btn-danger btn-xs" data-toggle="modal"
-                                                        th:onclick="'javascript:DeleteMFInfo(\''+${mfStat.index}+'\')'"
-                                                        data-target="#deleteSource">删除
+                                                <button class="btn btn-danger btn-xs" type="submit"
+                                                        th:onclick="'javascript:DeleteMF(\''+${mfStat.index}+'\')'"
+                                                       >删除
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <div th:if="${power} eq 'super'">
+                                <!--账号管理-->
+                                <div class="row">
+                                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 levl2 ">
+                                        4
+                                    </div>
+                                    <div  class="col-lg-4 col-md-4 col-sm-4 col-xs-4 levl2" role="button"
+                                         data-toggle="collapse" data-parent="#accordion" href="#userSchool"
+                                         aria-expanded="true" aria-controls="collapseOne">
+                                    <span
+                                          class="glyphicon glyphicon-triangle-bottom"></span><span> 账号管理</span>
+                                    </div>
+                                    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                        <button  class="btn btn-info btn-xs" data-toggle="modal"
+                                                data-target="#AddUser">
+                                            添加
+                                        </button>
+
+
+                                    </div>
+                                </div>
+                                <!--账号折叠-->
+                                <div  id="userSchool" class="collapse ">
+
+                                    <div th:each="user,mfStat:${userlist}">
+                                            <div class="row">
+                                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3  levl3">
+                                                    <span th:text="${user.username}"></span>
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                                    <span th:text="${user.remark}"></span>
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                                    <span th:text="${user.power}"></span>
+                                                </div>
+
+
+                                                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                                    <button th:onclick="'javascript:UpdateUserInfo(\''+${mfStat.index}+'\')'"
+                                                            class="btn btn-success btn-xs" data-toggle="modal"
+                                                            data-target="#changeUserSource">修改
+                                                    </button>
+                                                    <button class="btn btn-danger btn-xs" data-toggle="modal"
+                                                            th:onclick="'javascript:DeleteUserInfo(\''+${mfStat.index}+'\')'"
+                                                            data-target="#deleteUserSource">删除
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                </div>
+
+
+                            </div>
+
+
                         </div>
                     </div>
                 </div>
@@ -192,6 +252,65 @@
                         </div>
                     </div>
                 </div>
+
+                <!--添加User资源弹出窗口-->
+                <div class="modal fade" id="AddUser" role="dialog" aria-labelledby="gridSystemModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">添加用户</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                    <form class="form-horizontal">
+                                        <div class="form-group ">
+                                            <label class="col-xs-3 control-label">账号：</label>
+                                            <div class="col-xs-8 ">
+                                                <input type="" class="form-control input-sm duiqi" id="AddUserName"
+                                                       placeholder=""/><span style="font-size: small;color: red">默认密码：123456</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-3 control-label">姓名：</label>
+                                            <div class="col-xs-8 ">
+                                                <input type="" class="form-control input-sm duiqi" id="UserRemark"
+                                                       placeholder=""/>
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-3 control-label">权限：</label>
+                                            <div style="padding-top: 9px">
+                                               <input type="radio"  id="power" name="power"
+                                                       value="super" checked="true"/> 超级管理员
+                                               <input type="radio"  id="power" name="power"
+                                                            value="admin" /> 资产管理员
+                                               <input type="radio"  id="power" name="power"
+                                                            value="guest" /> 游客
+
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取
+                                                消
+                                            </button>
+                                            <button type="submit" onclick="addUser(this.form)"
+                                                    class="btn btn-xs btn-green">保 存
+                                            </button>
+                                            <button type="button" onclick="addUser(this.form)"
+                                                    class="btn btn-xs btn-green">继续添加并保存
+                                            </button>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <!--修改资源弹出窗口-->
                 <div class="modal fade" id="changeSource" role="dialog" aria-labelledby="gridSystemModalLabel">
@@ -244,15 +363,84 @@
 
                 </div>
 
-                <!--弹出删除资源警告窗口-->
-                <div class="modal fade" id="deleteSource" role="dialog" aria-labelledby="gridSystemModalLabel">
+                <!--修改User资源弹出窗口-->
+                <div class="modal fade" id="changeUserSource" role="dialog" aria-labelledby="gridSystemModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" >修改信息</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                    <form class="form-horizontal">
+                                        <div class="form-group ">
+                                            <label class="col-xs-3 control-label">账号：</label>
+                                            <div class="col-xs-8 ">
+                                                <input type="" class="form-control input-sm duiqi" id="updateUser_acc"
+                                                       placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group ">
+                                            <label class="col-xs-3 control-label">名称：</label>
+                                            <div class="col-xs-8 ">
+                                                <input type="" class="form-control input-sm duiqi" id="updateUser_name"
+                                                       placeholder=""/>
+                                                <input type="hidden" class="form-control input-sm duiqi"
+                                                       id="updateUserInfo_id"
+                                                       placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-3 control-label">密码：</label>
+                                            <div style="padding-top: 9px">
+                                                <input type="radio"  id="UpdatePass" name="UpdatePass"
+                                                       value="1" /> 重置
+                                                <input type="radio"  id="UpdatePass" name="UpdatePass"
+                                                       value="0" checked="true"/> 原密码
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-3 control-label">权限：</label>
+                                            <div style="padding-top: 9px">
+                                                <input type="radio"  id="UpdatePower" name="UpdatePower"
+                                                       value="super" /> 超级管理员
+                                                <input type="radio"  id="UpdatePower" name="UpdatePower"
+                                                       value="admin" /> 资产管理员
+                                                <input type="radio"  id="UpdatePower" name="UpdatePower"
+                                                       value="guest" /> 游客
+
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取
+                                                消
+                                            </button>
+                                            <button type="submit" onclick="UpdateUser(this.form)"
+                                                    class="btn btn-xs btn-green">修 改
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!--弹出删除资源警告窗口User-->
+                <div class="modal fade" id="deleteUserSource" role="dialog" aria-labelledby="gridSystemModalLabel">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                         aria-hidden="true">&times;</span></button>
 
-                                <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+                                <h4 class="modal-title" id="">提示</h4>
                             </div>
                             <div class="modal-body">
                                 <div class="container-fluid">
@@ -261,10 +449,10 @@
                             </div>
                             <form>
                                 <div class="modal-footer">
-                                    <input type="hidden" class="form-control input-sm duiqi" id="deleteInfo_id"
+                                    <input type="hidden" class="form-control input-sm duiqi" id="deleteUserInfo_id"
                                            placeholder=""/>
                                     <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消</button>
-                                    <button type="submit" onclick="deleteMF(this.form)" class="btn btn-xs btn-danger">删
+                                    <button type="submit" onclick="deleteUser(this.form)" class="btn btn-xs btn-danger">删
                                         除
                                     </button>
                                 </div>
@@ -292,14 +480,37 @@
     }
 
 </script>
-<!--删除模态框传值-->
+
+<!--修改User模态框传值-->
 <script th:inline="javascript" type="text/javascript">
-    function DeleteMFInfo(index) {
-        var xxx = [[${mflist}]];
-        document.getElementById("deleteInfo_id").value = xxx[index].id;
+    function UpdateUserInfo(index) {
+        var yyy = [[${userlist}]];
+
+        document.getElementById("updateUserInfo_id").value = yyy[index].id;
+        document.getElementById("updateUser_acc").value = yyy[index].username;
+        document.getElementById("updateUser_name").value = yyy[index].remark;
+              var power=yyy[index].power;
+              if (power=="super")
+                  $("input[id='UpdatePower']").eq(0).click();
+                  else if (power=="admin")
+                  $("input[id='UpdatePower']").eq(1).click();
+                      else
+                  $("input[id='UpdatePower']").eq(2).click();
+
+
     }
+
 </script>
 
+
+
+<!--删除模态框传值User -->
+<script th:inline="javascript" type="text/javascript">
+    function DeleteUserInfo(index) {
+        var xxx = [[${userlist}]];
+        document.getElementById("deleteUserInfo_id").value = xxx[index].id;
+    }
+</script>
 <!--修改MF AJAX-->
 <script type="text/javascript">
     function UpdateMF(form) {
@@ -321,10 +532,36 @@
         });
     }
 </script>
-<!--删除MF AJAX-->
+
+<!--修改User AJAX-->
 <script type="text/javascript">
-    function deleteMF(form) {
-        var id = form.deleteInfo_id.value;
+    function UpdateUser(form) {
+        var id = form.updateUserInfo_id.value;
+        var username = form.updateUser_acc.value;
+        var remark = form.updateUser_name.value;
+        var pass=form.UpdatePass.value;
+        var power = form.UpdatePower.value;
+        var str = "/UpdateUser";
+        $.ajax({
+            url: str,
+            async: false,
+            type: "POST",
+            data: {
+                id: id, username: username, remark: remark, power: power, pass:pass
+            },
+            success: function () {
+                alert("Success")
+            },
+        });
+    }
+</script>
+
+
+<!--删除MF AJAX-->
+<script th:inline="javascript" type="text/javascript">
+    function DeleteMF(index) {
+        var xxx = [[${mflist}]];
+       var id = xxx[index].id;
 
         var str = "/deleteMF";
         $.ajax({
@@ -336,6 +573,8 @@
             },
             success: function () {
                 alert("Success")
+                location.href="/MF"
+
             },
         });
     }
@@ -374,7 +613,50 @@
 
     }
 </script>
+<!--添加User AJAX-->
+<script type="text/javascript">
+    function addUser(form) {
+        var name = form.AddUserName.value;
+        var remark = form.UserRemark.value;
+        var power =form.power.value;
 
+        var str = "/SaveUser";
+        $.ajax({
+            url: str,
+            async: false,
+            type: "POST",
+            data: {
+                name: name, remark: remark, power: power
+            },
+            success: function () {
+
+            },
+        });
+        form.AddUserName.value = "";
+        form.UserRemark.value = "";
+
+    }
+</script>
+
+<!--删除User AJAX-->
+<script type="text/javascript">
+    function deleteUser(form) {
+        var id = form.deleteUserInfo_id.value;
+
+        var str = "/deleteUser";
+        $.ajax({
+            url: str,
+            async: false,
+            type: "POST",
+            data: {
+                id: id
+            },
+            success: function () {
+                alert("Success")
+            },
+        });
+    }
+</script>
 </body>
 
 </html>

@@ -88,7 +88,9 @@ public class PCServiceImpl implements PCService {
         sort = (String) session.getAttribute("sort");
         sortType = (String) session.getAttribute("sortType");
         state=(String)session.getAttribute("state");
-        Allpage = this.Findcount(keyWord,state) / PrintNumber + 1;
+        long SumNumber=this.Findcount(keyWord,state);
+
+        Allpage =  SumNumber/ PrintNumber + 1;
 
 //防呆
         if (currentPage > Allpage) currentPage = Allpage;
@@ -107,6 +109,7 @@ public class PCServiceImpl implements PCService {
         map.put("Allpage", Allpage);
         map.put("currentPage", currentPage);
         map.put("keyWord", keyWord);
+        map.put("SumNumber", SumNumber);
         return map;
     }
 
@@ -130,13 +133,10 @@ public class PCServiceImpl implements PCService {
     @Override
     public void BuildQRById(long id) throws WriterException,IOException {
         PC pc = findByID(id);
-        String filePath = "/qr/";  //后期可加时间控件区分名字
+        String filePath = "E:/qr/";  //后期可加时间控件区分名字
         String fileName = pc.getPCName()+"-QR.png";
 
-        String content ="PC名:  "+pc.getPCName()+"\n楼层:  "+pc.getFloor()+
-                "\n型号:  "+pc.getModel()+"\n姓名:  "+pc.getUsername()+
-                "\n资产编号:  "+pc.getAssetNumber()+"\nMAC:  "+pc.getMAC()+
-                "\nSN:  "+pc.getSN()+"\n工号:  "+pc.getUserNumber();
+        String content ="http://192.168.1.156:8080/PrintPC?id="+pc.getId();
 
         int width = 200; // 图像宽度
         int height = 200; // 图像高度

@@ -591,4 +591,10 @@ input.checkbox:checked:after {
     }
 }
 
+.span-Print{
+    display:block;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    overflow:hidden;
+}
 /*--//responsive--*/

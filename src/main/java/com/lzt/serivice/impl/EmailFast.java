@@ -37,7 +37,7 @@ public class EmailFast implements Runnable {
             String[] to={"liyeting@sh-liangxin.com","liangzhuotong@sh-liangxin.com"
             ,"guxianghai@sh-liangxin.com"};
             messageHelper.setTo(to);
-            messageHelper.setFrom("liangzhuotong@sh-liangxin.com");
+            messageHelper.setFrom("");
             messageHelper.setSubject("续保提醒");
             // true 表示启动HTML格式的邮件
             messageHelper.setText(str, true);

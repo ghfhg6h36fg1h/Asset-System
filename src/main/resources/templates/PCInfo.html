@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ch" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="../common/head :: commonHeader('首页')"></head>
+
+<body>
+<div style="margin-left: 30% ;font-size: medium">
+    PC名 ： <span th:text="${pcName}"></span><br/>
+    使用人 ： <span th:text="${user}"></span><br/>
+    楼层 ： <span th:text="${floor}"></span><br/>
+    型号 ： <span th:text="${model}"></span><br/>
+    MAC ： <span th:text="${mac}"></span><br/>
+    SN ： <span th:text="${sn}"></span><br/>
+    描述 ： <span th:text="${AssetNumber}"></span>
+    USB ： <span th:text="${usb}"></span>
+    NET ： <span th:text="${net}"></span>
+</div>
+
+</body>
+
+</html>

@@ -1,7 +1,7 @@
 package com.lzt.SampleController;
 
 
-import com.alibaba.fastjson.JSONArray;
+
 import com.alibaba.fastjson.JSONObject;
 import com.google.zxing.WriterException;
 
@@ -11,6 +11,11 @@ import com.lzt.serivice.PCService;
 import com.lzt.serivice.PcJpaService;
 
 import jdk.nashorn.internal.ir.RuntimeNode;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,12 +25,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 
@@ -68,8 +74,11 @@ public class PCController {
         model.addAttribute("keyWord", map.get("keyWord"));
 
         HttpSession session = request.getSession();
-        String loginName=(String)session.getAttribute("loginName");
-        model.addAttribute("loginName",loginName);
+        String remark=(String)session.getAttribute("remark");
+        String power=(String)session.getAttribute("power");
+        model.addAttribute("remark",remark);
+        model.addAttribute("power",power);
+        model.addAttribute("SumNumber",map.get("SumNumber"));
 
         return "PCManagement";
     }
@@ -86,8 +95,10 @@ public class PCController {
         String number = request.getParameter("number");
         String floor = request.getParameter("floor");
         String state = request.getParameter("state");
-
-        PCJpaService.save(pcName, model, name, asset, mac, sn, number, floor, state);
+        String usb = request.getParameter("usb");
+        String mcafee = request.getParameter("mcafee");
+        String net = request.getParameter("net");
+        PCJpaService.save(pcName, model, name, asset, mac, sn, number, floor, state,usb,mcafee,net);
 
         response.setContentType("text/html;charset=utf-8");
         PrintWriter out = response.getWriter();
@@ -108,13 +119,17 @@ public class PCController {
         String number = request.getParameter("number");
         String floor = request.getParameter("floor");
         String state = request.getParameter("state");
-
-        PCJpaService.update(id, pcName, model, name, asset, mac, sn, number, floor, state);
+        String usb = request.getParameter("usb");
+        String mcafee = request.getParameter("mcafee");
+        String net = request.getParameter("net");
+        PCJpaService.update(id, pcName, model, name, asset, mac, sn, number, floor, state,usb,mcafee,net);
 
         response.setContentType("text/html;charset=utf-8");
         PrintWriter out = response.getWriter();
         out.flush();
         out.close();
+
+
     }
 
     @RequestMapping(value = "/QuickPC", method = RequestMethod.GET)
@@ -158,6 +173,85 @@ public class PCController {
         long id = Long.parseLong(request.getParameter("id"));
         pcService.BuildQRById(id);
     }
+
+
+    @RequestMapping(value = "/PrintPC", method = RequestMethod.GET)
+    public String getInfo(HttpServletResponse response,Model model) throws WriterException, SecurityException, IOException {
+        long id = Long.parseLong(request.getParameter("id"));
+
+        PC pc = pcService.findByID(id);
+
+        model.addAttribute("pcName", pc.getPCName());
+        model.addAttribute("user", pc.getUsername());
+        model.addAttribute("floor", pc.getFloor());
+        model.addAttribute("model", pc.getModel());
+        model.addAttribute("mac", pc.getMAC());
+        model.addAttribute("sn", pc.getSN());
+        model.addAttribute("AssetNumber", pc.getAssetNumber());
+        model.addAttribute("usb", pc.getUsb());
+
+         return "PCInfo";
+    }
+
+
+    @RequestMapping(value = "/DownPC", method = RequestMethod.GET)
+    public void DownPC(HttpServletResponse response,Model model) throws WriterException, SecurityException, IOException {
+        @SuppressWarnings("resource")
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet("PCList");  //创建table工作薄
+
+        HSSFRow row;
+        HSSFCell cell;
+        int rowNumbwer=1;
+        row=sheet.createRow(0);
+        row.createCell(0).setCellValue("PC名");
+        row.createCell(1).setCellValue("使用人");
+        row.createCell(2).setCellValue("工号");
+        row.createCell(3).setCellValue("楼层");
+        row.createCell(4).setCellValue("型号");
+        row.createCell(5).setCellValue("MAC");
+        row.createCell(6).setCellValue("SN");
+        row.createCell(7).setCellValue("描述");
+        row.createCell(8).setCellValue("USB");
+        row.createCell(9).setCellValue("状态");
+        row.createCell(10).setCellValue("Mcafee");
+        row.createCell(11).setCellValue("Net");
+        List<PC> pcList=pcService.findAllPC();
+
+         for(PC pc:pcList){
+             row=sheet.createRow(rowNumbwer);
+             row.createCell(0).setCellValue(pc.getPCName());
+             row.createCell(1).setCellValue(pc.getUsername());
+             row.createCell(2).setCellValue(pc.getUserNumber());
+             row.createCell(3).setCellValue(pc.getFloor());
+             row.createCell(4).setCellValue(pc.getModel());
+             row.createCell(5).setCellValue(pc.getMAC());
+             row.createCell(6).setCellValue(pc.getSN());
+             row.createCell(7).setCellValue(pc.getAssetNumber());
+             row.createCell(8).setCellValue(pc.getUsb());
+             row.createCell(9).setCellValue(pc.getState());
+             row.createCell(10).setCellValue(pc.getMcafee());
+             row.createCell(11).setCellValue(pc.getNet());
+             rowNumbwer++;
+        }
+
+        //生成文件
+        FileOutputStream fos = new FileOutputStream("pc");
+        wb.write(fos);
+        fos.flush();
+        fos.close();
+        //导出
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment;filename="+URLEncoder.encode("pc.xls", "utf-8"));
+        OutputStream outputStream = response.getOutputStream();
+        wb.write(outputStream);
+        outputStream.flush();
+        outputStream.close();
+
+    }
+
+
+
 
     @RequestMapping("/ALLQR")
     public String ALLQR() throws WriterException, IOException {

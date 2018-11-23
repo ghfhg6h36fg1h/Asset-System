@@ -44,10 +44,11 @@ public class IBMController {
     @RequestMapping("/IBM")
     public String GetPCList(Model model) {
         HttpSession session = request.getSession();
-        String loginName=(String)session.getAttribute("loginName");
-        model.addAttribute("loginName",loginName);
+        String power=(String)session.getAttribute("power");
+        model.addAttribute("remark",(String)session.getAttribute("remark"));
 
-        if (loginName.equals("admin")){
+
+        if (!power.equals("guest")){
             String tempPage = request.getParameter("page");  //获取页码
             String jumpPage = request.getParameter("jumpPage");//获取跳转页码
             String type = request.getParameter("type");//获取页码类型
@@ -122,6 +123,22 @@ public class IBMController {
 
         return "redirect:/IBM";
     }
+
+    @RequestMapping(value = "/PrintIBM", method = RequestMethod.GET)
+    public String getInfo(HttpServletResponse response,Model model) throws WriterException, SecurityException, IOException {
+        long id = Long.parseLong(request.getParameter("id"));
+
+        IBM ibm= ibmService.findByID(id);
+
+        model.addAttribute("model1", ibm.getModel1());
+        model.addAttribute("model2", ibm.getModel2());
+        model.addAttribute("name",ibm.getName());
+        model.addAttribute("sn", ibm.getSn());
+        model.addAttribute("time", ibm.getTime());
+
+        return "IBMInfo";
+    }
+
 
     @RequestMapping("/ALLIBMQR")
     public String ALLIBMQR() throws WriterException, IOException {

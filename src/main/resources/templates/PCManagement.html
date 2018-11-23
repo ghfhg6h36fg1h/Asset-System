@@ -49,7 +49,10 @@
                             <option value="pcname">PC名</option>
                             <option value="model">型号</option>
                         </select>
+                        <button id="dcButton" class="btn btn-green btn-xs" type="submit" onclick="DownPC()">导出
+                        </button>
                     </div>
+
                 </div>
 
 
@@ -78,22 +81,22 @@
                         <div class="row" th:each="pc,pcStat:${PCs}">
                             <div th:if="${pc.state} eq '0'">
                                 <div class="col-xs-2">
-                                    <span id="IFHavePC" name="IFHavePC" style="color: #cd0a0a"
+                                    <span class="span-Print" id="IFHavePC" name="IFHavePC" style="color: #cd0a0a"
                                           th:text="${pc.PCName}"></span>
                                 </div>
                                 <div class="col-xs-2">
-                                    <span style="color: #cd0a0a" th:text="${pc.Floor}"></span>
+                                    <span class="span-Print" style="color: #cd0a0a" th:text="${pc.Floor}"></span>
                                 </div>
                                 <div class="col-xs-2">
-                                    <span style="color: #cd0a0a" th:text="${pc.Model}"></span>
+                                    <span class="span-Print" style="color: #cd0a0a" th:text="${pc.Model}"></span>
                                 </div>
                                 <div class="col-xs-2">
-                                    <span style="color: #cd0a0a" th:text="${pc.username}"></span>
+                                    <span class="span-Print" tyle="color: #cd0a0a" th:text="${pc.username}"></span>
                                 </div>
                                 <div class="col-xs-2">
-                                    <span style="color: #cd0a0a" th:text="${pc.AssetNumber}"></span>
+                                    <span class="span-Print" style="color: #cd0a0a" th:text="${pc.AssetNumber}"></span>
                                 </div>
-                                <div th:if="${loginName} eq 'admin'">
+                                <div th:if="${power} ne 'guest'">
                                     <div class="col-xs-2">
                                         <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#Select"
                                                 th:onclick="'javascript:PCInfo(\''+${pcStat.index}+'\')'">详情
@@ -109,7 +112,7 @@
                                     </div>
 
                                 </div>
-                                <div th:if="${loginName} ne 'admin'">
+                                <div th:if="${power} eq 'guest'">
                                     <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#Select"
                                             th:onclick="'javascript:PCInfo(\''+${pcStat.index}+'\')'">详情
                                     </button>
@@ -118,21 +121,21 @@
                             </div>
                             <div th:if="${pc.state} ne '0'">
                                 <div class="col-xs-2">
-                                    <span th:text="${pc.PCName}"></span>
+                                    <span class="span-Print" th:text="${pc.PCName}"></span>
                                 </div>
                                 <div class="col-xs-2">
-                                    <span th:text="${pc.Floor}"></span>
+                                    <span class="span-Print" th:text="${pc.Floor}"></span>
                                 </div>
                                 <div class="col-xs-2">
-                                    <span th:text="${pc.Model}"></span>
+                                    <span class="span-Print" th:text="${pc.Model}"></span>
                                 </div>
                                 <div class="col-xs-2">
-                                    <span th:text="${pc.username}"></span>
+                                    <span class="span-Print" th:text="${pc.username}"></span>
                                 </div>
                                 <div class="col-xs-2">
-                                    <span th:text="${pc.AssetNumber}"></span>
+                                    <span class="span-Print" th:text="${pc.AssetNumber}"></span>
                                 </div>
-                                <div th:if="${loginName} eq 'admin'">
+                                <div th:if="${power} ne 'guest'">
                                     <div class="col-xs-2">
                                         <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#Select"
                                                 th:onclick="'javascript:PCInfo(\''+${pcStat.index}+'\')'">详情
@@ -147,7 +150,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div th:if="${loginName} ne 'admin'">
+                                <div th:if="${power} eq 'guest'">
                                     <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#Select"
                                             th:onclick="'javascript:PCInfo(\''+${pcStat.index}+'\')'">详情
                                     </button>
@@ -166,6 +169,12 @@
                         //   $('#reviseUser').modal('show');
                         //   $('#addUser').modal('show');
                         //    document.getElementById("updateInfo_userName").value ="5555";
+                    }
+                </script>
+                <!--导出-->
+                <script>
+                    function DownPC() {
+                        location.href = "/DownPC";
                     }
                 </script>
                 <!--查询-->
@@ -239,6 +248,9 @@
                         document.getElementById("modelInfo_MAC").value = xxx[index].MAC;
                         document.getElementById("modelInfo_SN").value = xxx[index].SN;
                         document.getElementById("modelInfo_userNumber").value = xxx[index].userNumber;
+                        document.getElementById("modelInfo_usb").value = xxx[index].usb;
+                        document.getElementById("modelInfo_mcafee").value = xxx[index].mcafee;
+                        document.getElementById("modelInfo_net").value = xxx[index].net;
                         document.getElementById("modelInfo_ID").value = xxx[index].id;
 
                     }
@@ -258,6 +270,7 @@
                         document.getElementById("updateInfo_MAC").value = yyy[index].MAC;
                         document.getElementById("updateInfo_SN").value = yyy[index].SN;
                         document.getElementById("updateInfo_userNumber").value = yyy[index].userNumber;
+                        document.getElementById("updateInfo_usb").value = yyy[index].usb;
                         var p = yyy[index].state;
                         $("input[id='updateInfo_state']").eq(p).click();
 
@@ -284,6 +297,7 @@
                             <span th:text="${currentPage}"/>
                             <a th:href="@{/PC(page=${currentPage},type=next)}">下一页</a>
                             共<span th:text="${PCPage}"/>页
+                            ALL：<span th:text="${SumNumber}"/>
                         </form>
                     </ul>
                 </footer>
@@ -351,9 +365,30 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="sKnot" class="col-xs-3 control-label">USB</label>
+                                            <label for="sKnot" class="col-xs-3 control-label">工号</label>
                                             <div class="col-xs-8">
                                                 <input type="" class="form-control input-sm duiqi" id="add_number"
+                                                       placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sKnot" class="col-xs-3 control-label">USB</label>
+                                            <div class="col-xs-8">
+                                                <input type="" class="form-control input-sm duiqi" id="add_usb"
+                                                       placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sKnot" class="col-xs-3 control-label">Mcafee</label>
+                                            <div class="col-xs-8">
+                                                <input type="" class="form-control input-sm duiqi" id="add_mcafee"
+                                                       placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sKnot" class="col-xs-3 control-label">NET</label>
+                                            <div class="col-xs-8">
+                                                <input type="" class="form-control input-sm duiqi" id="add_net"
                                                        placeholder=""/>
                                             </div>
                                         </div>
@@ -375,7 +410,7 @@
                                             <div class="col-xs-8">
                                                 <label class="control-label" for="anniu">
                                                     <input type="radio" name="add_state" id="add_state"
-                                                           value="1"/>正常</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                           value="1" checked="true"/>正常</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 <label class="control-label" for="meun">
                                                     <input type="radio" name="add_state" id="add_state" value="0"/> 待调拨</label>
                                             </div>
@@ -407,6 +442,9 @@
                         var mac = form.add_mac.value;
                         var sn = form.add_sn.value;
                         var number = form.add_number.value;
+                        var usb = form.add_usb.value;
+                        var mcafee = form.add_mcafee.value;
+                        var net = form.add_net.value;
                         var floor = form.add_floor.value;
                         var state = form.add_state.value;
                         var str = "/SavePC";
@@ -416,10 +454,11 @@
                             type: "POST",
                             data: {
                                 pcName: pcName, model: model, name: name, asset: asset, mac: mac,
-                                sn: sn, number: number, floor: floor, state: state
+                                sn: sn, number: number, floor: floor, state: state, usb: usb,
+                                mcafee:mcafee,net:net
                             },
                             success: function () {
-                                alert("Success")
+                                alert("添加成功，请打印二维码")
                             },
                         });
                         form.add_pcName.value = "";
@@ -430,6 +469,9 @@
                         form.add_sn.value = "";
                         form.add_number.value = "";
                         form.add_floor.value = "";
+                        form.add_usb.value = "";
+                        form.add_mcafee.value = "";
+                        form.add_net.value = "";
                     }
                 </script>
                 <!--修改PC AJAX-->
@@ -443,6 +485,9 @@
                         var mac = form.updateInfo_MAC.value;
                         var sn = form.updateInfo_SN.value;
                         var number = form.updateInfo_userNumber.value;
+                        var usb = form.updateInfo_usb.value;
+                        var mcafee = form.updateInfo_mcafee.value;
+                        var net = form.updateInfo_net.value;
                         var floor = form.updateInfo_floor.value;
                         var state = form.updateInfo_state.value;
                         var str = "/UpdatePC";
@@ -453,10 +498,10 @@
                             type: "POST",
                             data: {
                                 id: id, pcName: pcName, model: model, name: name, asset: asset, mac: mac,
-                                sn: sn, number: number, floor: floor, state: state
+                                sn: sn, number: number, floor: floor, state: state, usb: usb,mcafee:mcafee,net:net
                             },
                             success: function () {
-                                alert("修改成功，建议更新二维码");
+                                alert("修改成功");
                             },
                             error: function () {
                                 alert("请重新检查是否成功");
@@ -503,9 +548,9 @@
                             type: "GET",
                             data: {},
                             success: function (res) {
-                                console.log(res.loginName)
+                                console.log(res.power)
 
-                                if (res.loginName != "admin") {
+                                if (res.power == "guest") {
                                     $("#addButton").hide();
                                     $("#ptButton").hide();
                                 }
@@ -593,10 +638,31 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="sKnot" class="col-xs-3 control-label">USB：</label>
+                                            <label for="sKnot" class="col-xs-3 control-label">工号：</label>
                                             <div class="col-xs-8">
                                                 <input type="" class="form-control input-sm duiqi"
                                                        id="updateInfo_userNumber" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sKnot" class="col-xs-3 control-label">USB：</label>
+                                            <div class="col-xs-8">
+                                                <input type="" class="form-control input-sm duiqi"
+                                                       id="updateInfo_usb" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sKnot" class="col-xs-3 control-label">Mcafee：</label>
+                                            <div class="col-xs-8">
+                                                <input type="" class="form-control input-sm duiqi"
+                                                       id="updateInfo_mcafee" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sKnot" class="col-xs-3 control-label">NET：</label>
+                                            <div class="col-xs-8">
+                                                <input type="" class="form-control input-sm duiqi"
+                                                       id="updateInfo_net" placeholder=""/>
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -697,13 +763,38 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="sKnot" class="col-xs-3 control-label">USB：</label>
+                                            <label for="sKnot" class="col-xs-3 control-label">工号：</label>
                                             <div class="col-xs-8">
                                                 <input style="color: #2d2d2d" readonly="readonly"
                                                        class="form-control input-sm duiqi"
                                                        id="modelInfo_userNumber" placeholder=""/>
                                             </div>
                                         </div>
+                                        <div class="form-group">
+                                            <label for="sKnot" class="col-xs-3 control-label">USB：</label>
+                                            <div class="col-xs-8">
+                                                <input style="color: #2d2d2d" readonly="readonly"
+                                                       class="form-control input-sm duiqi"
+                                                       id="modelInfo_usb" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sKnot" class="col-xs-3 control-label">Mcafee：</label>
+                                            <div class="col-xs-8">
+                                                <input style="color: #2d2d2d" readonly="readonly"
+                                                       class="form-control input-sm duiqi"
+                                                       id="modelInfo_mcafee" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sKnot" class="col-xs-3 control-label">NET：</label>
+                                            <div class="col-xs-8">
+                                                <input style="color: #2d2d2d" readonly="readonly"
+                                                       class="form-control input-sm duiqi"
+                                                       id="modelInfo_net" placeholder=""/>
+                                            </div>
+                                        </div>
+
                                         <div class="modal-footer">
                                             <input type="reset" class="btn btn-xs btn-white" data-dismiss="modal"
                                                    value="返回"/>

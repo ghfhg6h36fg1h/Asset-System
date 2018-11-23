@@ -101,12 +101,11 @@ public class IBMServiceImpl implements IBMService {
     @Override
     public void BuildQRById(long id) throws WriterException, IOException {
         IBM ibm = findByID(id);
-        String filePath = "/qr/";  //后期可加时间控件区分名字
+        String filePath = "E:/qr/";  //后期可加时间控件区分名字
         String fileName = ibm.getName() + ibm.getSn() + "-QR.png";
 
-        String content = "名称:  " + ibm.getName() + "\n型号:  " + ibm.getModel1() +
-                "\n机型:  " + ibm.getModel2() + "\nSN:  " + ibm.getSn() +
-                "\n维保时间:  " + ibm.getTime();
+        String content ="http://192.168.1.156:8080/PrintIBM?id="+ibm.getId();
+
 
         int width = 60; // 图像宽度
         int height = 60; // 图像高度
