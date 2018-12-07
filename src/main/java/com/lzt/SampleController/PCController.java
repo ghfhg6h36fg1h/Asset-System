@@ -1,7 +1,6 @@
 package com.lzt.SampleController;
 
 
-
 import com.alibaba.fastjson.JSONObject;
 import com.google.zxing.WriterException;
 
@@ -10,18 +9,27 @@ import com.lzt.entity.PC;
 import com.lzt.serivice.PCService;
 import com.lzt.serivice.PcJpaService;
 
+import com.lzt.serivice.RecordService;
 import jdk.nashorn.internal.ir.RuntimeNode;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.servlet.ServletException;
@@ -32,6 +40,10 @@ import javax.servlet.http.HttpSession;
 import java.io.*;
 
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -48,11 +60,14 @@ public class PCController {
     private PcJpaService PCJpaService;
 
     @Autowired
+    private RecordService recordService;
+
+    @Autowired
     HttpServletRequest request;
 
     // 查询PC列表
     @RequestMapping("/PC")
-    public String GetPCList(HttpServletRequest request, HttpServletResponse response,Model model) {
+    public String GetPCList(HttpServletRequest request, HttpServletResponse response, Model model) {
 
         String tempPage = request.getParameter("page");  //获取页码
         String jumpPage = request.getParameter("jumpPage");//获取跳转页码
@@ -74,13 +89,15 @@ public class PCController {
         model.addAttribute("keyWord", map.get("keyWord"));
 
         HttpSession session = request.getSession();
-        String remark=(String)session.getAttribute("remark");
-        String power=(String)session.getAttribute("power");
-        model.addAttribute("remark",remark);
-        model.addAttribute("power",power);
-        model.addAttribute("SumNumber",map.get("SumNumber"));
-
-        return "PCManagement";
+        String remark = (String) session.getAttribute("remark");
+        String power = (String) session.getAttribute("power");
+        model.addAttribute("remark", remark);
+        model.addAttribute("power", power);
+        model.addAttribute("SumNumber", map.get("SumNumber"));
+        if (power != null)
+            return "PCManagement";
+        else
+            return "E404";
     }
 
     @RequestMapping(value = "/SavePC", method = RequestMethod.POST)
@@ -98,8 +115,15 @@ public class PCController {
         String usb = request.getParameter("usb");
         String mcafee = request.getParameter("mcafee");
         String net = request.getParameter("net");
-        PCJpaService.save(pcName, model, name, asset, mac, sn, number, floor, state,usb,mcafee,net);
-
+        PCJpaService.save(pcName, model, name, asset, mac, sn, number, floor, state, usb, mcafee, net);
+        HttpSession session = request.getSession();
+        String username = (String) session.getAttribute("loginName");
+        String rename = (String) session.getAttribute("remark");
+        DateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = f.format(new Date());
+        String operation = "添加";
+        String remark = username + "( " + rename + ")" + operation + " PC名为：" + pcName + "的机器";
+        recordService.save(username, time, operation, remark);
         response.setContentType("text/html;charset=utf-8");
         PrintWriter out = response.getWriter();
         out.flush();
@@ -122,7 +146,18 @@ public class PCController {
         String usb = request.getParameter("usb");
         String mcafee = request.getParameter("mcafee");
         String net = request.getParameter("net");
-        PCJpaService.update(id, pcName, model, name, asset, mac, sn, number, floor, state,usb,mcafee,net);
+        PCJpaService.update(id, pcName, model, name, asset, mac, sn, number, floor, state, usb, mcafee, net);
+
+        HttpSession session = request.getSession();
+        String username = (String) session.getAttribute("loginName");
+        String rename = (String) session.getAttribute("remark");
+
+
+        DateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = f.format(new Date());
+        String operation = "修改";
+        String remark = username + "( " + rename + ")" + operation + " PC名为：" + pcName + "的机器信息";
+        recordService.save(username, time, operation, remark);
 
         response.setContentType("text/html;charset=utf-8");
         PrintWriter out = response.getWriter();
@@ -164,8 +199,18 @@ public class PCController {
     public void DeletePC(HttpServletResponse response) throws SecurityException, IOException {
 
         long id = Long.parseLong(request.getParameter("id"));
+        String name = (String) (request.getParameter("name"));
 
         PCJpaService.delete(id);
+
+        HttpSession session = request.getSession();
+        String username = (String) session.getAttribute("loginName");
+        String rename = (String) session.getAttribute("remark");
+        DateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = f.format(new Date());
+        String operation = "删除";
+        String remark = username + "(" + rename + ")" + operation + " PC名为：" + name + "的机器";
+        recordService.save(username, time, operation, remark);
     }
 
     @RequestMapping(value = "/QRCode", method = RequestMethod.POST)
@@ -176,7 +221,7 @@ public class PCController {
 
 
     @RequestMapping(value = "/PrintPC", method = RequestMethod.GET)
-    public String getInfo(HttpServletResponse response,Model model) throws WriterException, SecurityException, IOException {
+    public String getInfo(HttpServletResponse response, Model model) throws WriterException, SecurityException, IOException {
         long id = Long.parseLong(request.getParameter("id"));
 
         PC pc = pcService.findByID(id);
@@ -190,20 +235,19 @@ public class PCController {
         model.addAttribute("AssetNumber", pc.getAssetNumber());
         model.addAttribute("usb", pc.getUsb());
 
-         return "PCInfo";
+        return "PCInfo";
     }
 
 
-    @RequestMapping(value = "/DownPC", method = RequestMethod.GET)
-    public void DownPC(HttpServletResponse response,Model model) throws WriterException, SecurityException, IOException {
-        @SuppressWarnings("resource")
-        HSSFWorkbook wb = new HSSFWorkbook();
-        HSSFSheet sheet = wb.createSheet("PCList");  //创建table工作薄
+    @RequestMapping(value = "/DownPC")
+    public void DownPC(HttpServletResponse response) throws SecurityException, IOException {
+        // @SuppressWarnings("resource")
+        XSSFWorkbook wb = new XSSFWorkbook();
+        XSSFSheet sheet = wb.createSheet("PCList");  //创建table工作薄
 
-        HSSFRow row;
-        HSSFCell cell;
-        int rowNumbwer=1;
-        row=sheet.createRow(0);
+        XSSFRow row;
+        int rowNumbwer = 1;
+        row = sheet.createRow(0);
         row.createCell(0).setCellValue("PC名");
         row.createCell(1).setCellValue("使用人");
         row.createCell(2).setCellValue("工号");
@@ -216,33 +260,29 @@ public class PCController {
         row.createCell(9).setCellValue("状态");
         row.createCell(10).setCellValue("Mcafee");
         row.createCell(11).setCellValue("Net");
-        List<PC> pcList=pcService.findAllPC();
-
-         for(PC pc:pcList){
-             row=sheet.createRow(rowNumbwer);
-             row.createCell(0).setCellValue(pc.getPCName());
-             row.createCell(1).setCellValue(pc.getUsername());
-             row.createCell(2).setCellValue(pc.getUserNumber());
-             row.createCell(3).setCellValue(pc.getFloor());
-             row.createCell(4).setCellValue(pc.getModel());
-             row.createCell(5).setCellValue(pc.getMAC());
-             row.createCell(6).setCellValue(pc.getSN());
-             row.createCell(7).setCellValue(pc.getAssetNumber());
-             row.createCell(8).setCellValue(pc.getUsb());
-             row.createCell(9).setCellValue(pc.getState());
-             row.createCell(10).setCellValue(pc.getMcafee());
-             row.createCell(11).setCellValue(pc.getNet());
-             rowNumbwer++;
+        List<PC> pcList = pcService.findAllPC();
+        for (PC pc : pcList) {
+            row = sheet.createRow(rowNumbwer);
+            row.createCell(0).setCellValue(pc.getPCName());
+            row.createCell(1).setCellValue(pc.getUsername());
+            row.createCell(2).setCellValue(pc.getUserNumber());
+            row.createCell(3).setCellValue(pc.getFloor());
+            row.createCell(4).setCellValue(pc.getModel());
+            row.createCell(5).setCellValue(pc.getMAC());
+            row.createCell(6).setCellValue(pc.getSN());
+            row.createCell(7).setCellValue(pc.getAssetNumber());
+            row.createCell(8).setCellValue(pc.getUsb());
+            row.createCell(9).setCellValue(pc.getState());
+            row.createCell(10).setCellValue(pc.getMcafee());
+            row.createCell(11).setCellValue(pc.getNet());
+            rowNumbwer++;
         }
 
-        //生成文件
-        FileOutputStream fos = new FileOutputStream("pc");
-        wb.write(fos);
-        fos.flush();
-        fos.close();
         //导出
-        response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment;filename="+URLEncoder.encode("pc.xls", "utf-8"));
+
+        //  response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("pc.xlsx", "UTF-8"));
+
         OutputStream outputStream = response.getOutputStream();
         wb.write(outputStream);
         outputStream.flush();
@@ -250,7 +290,48 @@ public class PCController {
 
     }
 
+    @RequestMapping(value = "/InputPC", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject InputPC(HttpServletResponse response, MultipartFile file) throws WriterException, SecurityException, IOException {
 
+        InputStream inputStream = file.getInputStream();
+        XSSFWorkbook wb = new XSSFWorkbook(inputStream);
+
+        XSSFSheet sheet = wb.getSheetAt(0);
+        JSONObject result = new JSONObject();
+        List<PC> pclistTemp = new ArrayList<PC>();
+        try {
+            for (Row row : sheet) {//数字+null 处理
+
+                for (int j = 0; j < 12; j++)//对null的处理
+                    if (row.getCell(j) == null)
+                        row.createCell(j);
+
+                for (int j = 0; j < 12; j++)//对数字的处理
+                    row.getCell(j).setCellType(XSSFCell.CELL_TYPE_STRING);
+
+
+                String pcname = row.getCell(0).getStringCellValue();
+                String name = row.getCell(1).getStringCellValue();
+                String number = row.getCell(2).getStringCellValue();
+                String floor = row.getCell(3).getStringCellValue();
+                String model = row.getCell(4).getStringCellValue();
+                String mac = row.getCell(5).getStringCellValue();
+                String sn = row.getCell(6).getStringCellValue();
+                String asset = row.getCell(7).getStringCellValue();
+                String usb = row.getCell(8).getStringCellValue();
+                String state = row.getCell(9).getStringCellValue();
+                String mcafee = row.getCell(10).getStringCellValue();
+                String net = row.getCell(11).getStringCellValue();
+                PCJpaService.save(pcname, model, name, asset, mac, sn, number, floor, state, usb, mcafee, net);
+            }
+
+            result.put("success", true);
+        } catch (Exception e) {
+            result.put("success", false);
+        }
+        return result;
+    }
 
 
     @RequestMapping("/ALLQR")
@@ -260,6 +341,13 @@ public class PCController {
         for (PC pc : pclist) {
             pcService.BuildQRById(pc.getId());
         }
+        return "redirect:/PC";
+    }
+
+    @RequestMapping("/ClearPC")
+    public String ClearPC() {
+
+        pcService.Clear();
         return "redirect:/PC";
     }
 }

@@ -41,36 +41,37 @@ public class IBMController {
     @Autowired
     CommonFunctionService cfs;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @RequestMapping("/IBM")
     public String GetPCList(Model model) {
         HttpSession session = request.getSession();
-        String power=(String)session.getAttribute("power");
-        model.addAttribute("remark",(String)session.getAttribute("remark"));
+        String power = (String) session.getAttribute("power");
+        if (power == null)
+            return "E404";
 
-
-        if (!power.equals("guest")){
+        if (!power.equals("guest")) {
             String tempPage = request.getParameter("page");  //获取页码
             String jumpPage = request.getParameter("jumpPage");//获取跳转页码
             String type = request.getParameter("type");//获取页码类型
             String keyWord = request.getParameter("keyWord");//获取关键字
-            String state=request.getParameter("st");//获取状态值
+            String state = request.getParameter("st");//获取状态值
 
-            HashMap map = ibmService.findIBMByPage(tempPage, jumpPage, type, keyWord,state, request);
+            HashMap map = ibmService.findIBMByPage(tempPage, jumpPage, type, keyWord, state, request);
 
             List<IBM> ibmList = (List<IBM>) map.get("ibmList");
             model.addAttribute("ibmList", ibmList);
             model.addAttribute("IBMPage", map.get("Allpage"));
             model.addAttribute("currentPage", map.get("currentPage"));
             model.addAttribute("keyWord", map.get("keyWord"));
+            model.addAttribute("remark", (String) session.getAttribute("remark"));
 
             return "IBMManagement";
-        }
-        else
+        } else
             return "guest";
 
     }
 
-    @RequestMapping(value="/SaveIBM" ,method = RequestMethod.POST)
+    @RequestMapping(value = "/SaveIBM", method = RequestMethod.POST)
     public void addIBM(HttpServletResponse response) throws ServletException, IOException {
 
         String name = request.getParameter("IBMName");
@@ -95,6 +96,7 @@ public class IBMController {
 
         ibmJpaService.delete(id);
     }
+
     @RequestMapping(value = "/UpdateIBM", method = RequestMethod.POST)
     public void UpdateIBM(HttpServletResponse response) throws ServletException, IOException {
 
@@ -106,8 +108,7 @@ public class IBMController {
         String time = request.getParameter("time");
 
 
-
-        ibmJpaService.update(id, name, model1, model2,  sn, time);
+        ibmJpaService.update(id, name, model1, model2, sn, time);
 
         response.setContentType("text/html;charset=utf-8");
         PrintWriter out = response.getWriter();
@@ -116,23 +117,22 @@ public class IBMController {
     }
 
 
-    @RequestMapping("/IBMQR")
-    public String IBMQR() throws WriterException, IOException {
+    @RequestMapping(value = "/IBMQR", method = RequestMethod.POST)
+    public void IBMQR(HttpServletResponse response) throws WriterException, SecurityException, IOException {
         long id = Long.parseLong(request.getParameter("IBMid"));
         ibmService.BuildQRById(id);
 
-        return "redirect:/IBM";
     }
 
     @RequestMapping(value = "/PrintIBM", method = RequestMethod.GET)
-    public String getInfo(HttpServletResponse response,Model model) throws WriterException, SecurityException, IOException {
+    public String getInfo(HttpServletResponse response, Model model) throws WriterException, SecurityException, IOException {
         long id = Long.parseLong(request.getParameter("id"));
 
-        IBM ibm= ibmService.findByID(id);
+        IBM ibm = ibmService.findByID(id);
 
         model.addAttribute("model1", ibm.getModel1());
         model.addAttribute("model2", ibm.getModel2());
-        model.addAttribute("name",ibm.getName());
+        model.addAttribute("name", ibm.getName());
         model.addAttribute("sn", ibm.getSn());
         model.addAttribute("time", ibm.getTime());
 
@@ -152,7 +152,7 @@ public class IBMController {
 
     @RequestMapping("/synchro")
     public String synchro() throws ParseException, MessagingException {
-     cfs.synchro();
+        cfs.synchro();
         return "redirect:/IBM";
     }
 }

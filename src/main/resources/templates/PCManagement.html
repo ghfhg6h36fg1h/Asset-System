@@ -23,8 +23,8 @@
                         <button id="addButton" class="btn btn-yellow btn-xs" data-toggle="modal" data-target="#addUser">
                             添加PC
                         </button>
-                        <button id="ptButton" class="btn btn-green btn-xs" type="submit" onclick="ALLQR()">批量生成二维码
-                        </button>
+                        <!--<button id="ptButton" class="btn btn-green btn-xs" type="submit" onclick="ALLQR()">批量生成二维码-->
+                        <!--</button>-->
 
 
                     </div>
@@ -49,8 +49,26 @@
                             <option value="pcname">PC名</option>
                             <option value="model">型号</option>
                         </select>
-                        <button id="dcButton" class="btn btn-green btn-xs" type="submit" onclick="DownPC()">导出
-                        </button>
+                        <ul class="nav navbar-nav" style="margin-top: 8px; float: right">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    功能<b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/DownPC">导出</a></li>
+
+                                    <li th:if="${power} ne 'guest'">
+                                        <a data-toggle="modal"
+                                           data-target="#InputPC" href="#">导入</a>
+                                        <a data-toggle="modal"
+                                           data-target="#clearPC" href="#">清空数据</a>
+
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li><a href="/ALLQR">批量生成二维码</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+
                     </div>
 
                 </div>
@@ -91,14 +109,16 @@
                                     <span class="span-Print" style="color: #cd0a0a" th:text="${pc.Model}"></span>
                                 </div>
                                 <div class="col-xs-2">
-                                    <span class="span-Print" tyle="color: #cd0a0a" th:text="${pc.username}"></span>
+                                    <span class="span-Print" style="color: #cd0a0a" th:text="${pc.username}"></span>
                                 </div>
                                 <div class="col-xs-2">
-                                    <span class="span-Print" style="color: #cd0a0a" th:text="${pc.AssetNumber}"></span>
+                                        <span class="span-Print" style="color: #cd0a0a"
+                                              th:text="${pc.AssetNumber}"></span>
                                 </div>
                                 <div th:if="${power} ne 'guest'">
                                     <div class="col-xs-2">
-                                        <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#Select"
+                                        <button class="btn btn-success btn-xs" data-toggle="modal"
+                                                data-target="#Select"
                                                 th:onclick="'javascript:PCInfo(\''+${pcStat.index}+'\')'">详情
                                         </button>
                                         <button class="btn btn-success btn-xs" data-toggle="modal"
@@ -137,7 +157,8 @@
                                 </div>
                                 <div th:if="${power} ne 'guest'">
                                     <div class="col-xs-2">
-                                        <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#Select"
+                                        <button class="btn btn-success btn-xs" data-toggle="modal"
+                                                data-target="#Select"
                                                 th:onclick="'javascript:PCInfo(\''+${pcStat.index}+'\')'">详情
                                         </button>
                                         <button class="btn btn-success btn-xs" data-toggle="modal"
@@ -171,12 +192,7 @@
                         //    document.getElementById("updateInfo_userName").value ="5555";
                     }
                 </script>
-                <!--导出-->
-                <script>
-                    function DownPC() {
-                        location.href = "/DownPC";
-                    }
-                </script>
+
                 <!--查询-->
                 <script>
                     function SelectAllPC() {
@@ -223,12 +239,6 @@
                 </script>
 
 
-                <!--批量二维码-->
-                <script>
-                    function ALLQR() {
-                        location.href = "/ALLQR";
-                    }
-                </script>
                 <!--排序选择-->
                 <script>
                     function Sort() {
@@ -271,6 +281,8 @@
                         document.getElementById("updateInfo_SN").value = yyy[index].SN;
                         document.getElementById("updateInfo_userNumber").value = yyy[index].userNumber;
                         document.getElementById("updateInfo_usb").value = yyy[index].usb;
+                        document.getElementById("updateInfo_mcafee").value = yyy[index].mcafee;
+                        document.getElementById("updateInfo_net").value = yyy[index].net;
                         var p = yyy[index].state;
                         $("input[id='updateInfo_state']").eq(p).click();
 
@@ -282,6 +294,7 @@
                     function DeletePCInfo(index) {
                         var xxx = [[${PCs}]];
                         document.getElementById("deletePCID").value = xxx[index].id;
+                        document.getElementById("deletePCName").value = xxx[index].PCName;
                     }
 
                 </script>
@@ -316,7 +329,8 @@
                                         <div class="form-group ">
                                             <label for="sName" class="col-xs-3 control-label">PC名：</label>
                                             <div class="col-xs-8 ">
-                                                <input type="text" class="form-control input-sm duiqi" id="add_pcName"
+                                                <input type="text" class="form-control input-sm duiqi"
+                                                       id="add_pcName"
                                                        placeholder=""/>
                                             </div>
                                         </div>
@@ -412,15 +426,18 @@
                                                     <input type="radio" name="add_state" id="add_state"
                                                            value="1" checked="true"/>正常</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 <label class="control-label" for="meun">
-                                                    <input type="radio" name="add_state" id="add_state" value="0"/> 待调拨</label>
+                                                    <input type="radio" name="add_state" id="add_state" value="0"/>
+                                                    待调拨</label>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
                                             <input type="reset" class="btn btn-xs btn-white" data-dismiss="modal"
                                                    value="取消"/>
-                                            <input type="submit" onclick="addPC(this.form)" class="btn btn-xs btn-green"
+                                            <input type="submit" onclick="addPC(this.form)"
+                                                   class="btn btn-xs btn-green"
                                                    value="保存"/>
-                                            <input type="button" onclick="addPC(this.form)" class="btn btn-xs btn-green"
+                                            <input type="button" onclick="addPC(this.form)"
+                                                   class="btn btn-xs btn-green"
                                                    value="保存并继续添加"/>
                                         </div>
                                     </form>
@@ -455,7 +472,7 @@
                             data: {
                                 pcName: pcName, model: model, name: name, asset: asset, mac: mac,
                                 sn: sn, number: number, floor: floor, state: state, usb: usb,
-                                mcafee:mcafee,net:net
+                                mcafee: mcafee, net: net
                             },
                             success: function () {
                                 alert("添加成功，请打印二维码")
@@ -497,11 +514,25 @@
                             async: false,
                             type: "POST",
                             data: {
-                                id: id, pcName: pcName, model: model, name: name, asset: asset, mac: mac,
-                                sn: sn, number: number, floor: floor, state: state, usb: usb,mcafee:mcafee,net:net
+                                id: id,
+                                pcName: pcName,
+                                model: model,
+                                name: name,
+                                asset: asset,
+                                mac: mac,
+                                sn: sn,
+                                number: number,
+                                floor: floor,
+                                state: state,
+                                usb: usb,
+                                mcafee: mcafee,
+                                net: net
                             },
                             success: function () {
                                 alert("修改成功");
+                                $('#reviseUser').modal('hide');
+                                //   location.href="/PC";
+
                             },
                             error: function () {
                                 alert("请重新检查是否成功");
@@ -514,16 +545,53 @@
                 <script type="text/javascript">
                     function Delete() {
                         var id = document.getElementById("deletePCID").value;
+                        var name = document.getElementById("deletePCName").value;
                         var str = "/DeletePC";
                         $.ajax({
                             url: str,
                             async: false,
                             type: "POST",
-                            data: {id: id},
+                            data: {id: id, name: name},
 
                         });
                     }
                 </script>
+                <!--导入-->
+                <script type="text/javascript">
+                    function InputPCData() {
+                        var formData = new FormData();
+                        var name = $("#excel").val()
+                        var type = (name.substr(name.lastIndexOf("."))).toLowerCase();
+                        if (type!=".xlsx")
+                            alert("请上传.xlsx类型文件")
+                        else {
+                            $("#inputPCCbutton").attr('disabled',true)
+                           formData.append("file", $("#excel")[0].files[0])
+                           formData.append("name", name)
+                            $.ajax({
+                                url: "/InputPC",
+                                type: "POST",
+                                async: false,
+                                data:  formData,
+                                processData: false,//不对数据进行处理
+                                contentType: false,
+
+                                success: function (res) {
+                                    console.log(res)
+                                    if (res.success ==true) {
+                                        alert("导入成功")
+                                        $("#inputPCFrom").submit();
+                                    }
+                                   else
+                                        alert("导入失败，请检查格式")
+                                }
+                            });
+
+                    }
+
+                    }
+                </script>
+
                 <!--详情生成二维码-->
                 <script type="text/javascript">
                     function QR() {
@@ -626,14 +694,16 @@
                                         <div class="form-group">
                                             <label for="sKnot" class="col-xs-3 control-label">MAC：</label>
                                             <div class="col-xs-8">
-                                                <input type="" class="form-control input-sm duiqi" id="updateInfo_MAC"
+                                                <input type="" class="form-control input-sm duiqi"
+                                                       id="updateInfo_MAC"
                                                        placeholder=""/>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="sKnot" class="col-xs-3 control-label">SN：</label>
                                             <div class="col-xs-8">
-                                                <input type="" class="form-control input-sm duiqi" id="updateInfo_SN"
+                                                <input type="" class="form-control input-sm duiqi"
+                                                       id="updateInfo_SN"
                                                        placeholder=""/>
                                             </div>
                                         </div>
@@ -669,17 +739,19 @@
                                             <label for="situation" class="col-xs-3 control-label">状态：</label>
                                             <div class="col-xs-8">
                                                 <label class="control-label" for="anniu">
-                                                    <input type="radio" name="updateInfo_state" id="updateInfo_state"
+                                                    <input type="radio" name="updateInfo_state"
+                                                           id="updateInfo_state"
                                                            value="0"/>待拨</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 <label class="control-label" for="meun">
-                                                    <input type="radio" name="updateInfo_state" id="updateInfo_state"
+                                                    <input type="radio" name="updateInfo_state"
+                                                           id="updateInfo_state"
                                                            value="1"/> 正常</label>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
                                             <input type="reset" class="btn btn-xs btn-white" data-dismiss="modal"
                                                    value="取消"/>
-                                            <input type="submit" class="btn btn-xs btn-green"
+                                            <input type="button" class="btn btn-xs btn-green"
                                                    onclick="UpdatePC(this.form)" value="修改"/>
                                         </div>
                                     </form>
@@ -717,7 +789,8 @@
                                         <div class="form-group">
                                             <label for="sLink" class="col-xs-3 control-label">楼层：</label>
                                             <div class="col-xs-8 ">
-                                                <input style="color: #2d2d2d" readonly="readonly" id="modelInfo_floor"
+                                                <input style="color: #2d2d2d" readonly="readonly"
+                                                       id="modelInfo_floor"
                                                        class="form-control input-sm duiqi"
                                                        placeholder=""/>
                                             </div>
@@ -828,8 +901,11 @@
                             <div class="modal-footer">
                                 <form>
                                     <input type="hidden" id="deletePCID" name="deletePCID"/>
-                                    <input type="reset" class="btn btn-xs btn-white" data-dismiss="modal" value="取消"/>
-                                    <input type="submit" class="btn  btn-xs btn-danger" onclick="Delete()" value="删除"/>
+                                    <input type="hidden" id="deletePCName" name="deletePCName"/>
+                                    <input type="reset" class="btn btn-xs btn-white" data-dismiss="modal"
+                                           value="取消"/>
+                                    <input type="submit" class="btn  btn-xs btn-danger" onclick="Delete()"
+                                           value="删除"/>
                                 </form>
                             </div>
                         </div>
@@ -837,6 +913,65 @@
                     </div>
                     <!-- /.modal-dialog -->
                 </div>
+
+                <!--弹出清空警告窗口-->
+                <div class="modal fade" id="clearPC" role="dialog" aria-labelledby="gridSystemModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                    确定要清空表数据？清空后不可恢复！
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <form action="/ClearPC">
+
+                                    <input type="reset" class="btn btn-xs btn-white" data-dismiss="modal"
+                                           value="取消"/>
+                                    <input type="submit" class="btn  btn-xs btn-danger"
+                                           value="清空"/>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+
+                <!--弹出导入窗口-->
+                <div class="modal fade" id="InputPC" role="dialog" aria-labelledby="gridSystemModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">数据导入</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                    <input type="file" id="excel" name="excel"/>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <form id="inputPCFrom" action="#">
+
+                                    <input type="reset" class="btn btn-xs btn-white" data-dismiss="modal"
+                                           value="取消"/>
+                                    <input type="button" class="btn  btn-xs btn-danger" id="inputPCCbutton" name="inputPCCbutton"
+                                           value="导入" onclick="InputPCData()"/>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+
 
             </div>
         </div>

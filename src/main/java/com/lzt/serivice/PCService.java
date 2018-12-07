@@ -23,4 +23,5 @@ public interface PCService {
     List<PC> findAllPC();
     void BuildQRById(long id)throws WriterException ,IOException;
 
+    void Clear();
 }

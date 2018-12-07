@@ -4,6 +4,7 @@ package com.lzt.dao;
 import com.lzt.entity.PC;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -37,4 +38,7 @@ public interface PcDao  { //extends CrudRepository<PC,Long> {
 
     @Select("select * from tb2_pc")
     List<PC> findAllPC();
+
+    @Update("truncate table tb2_pc")
+    void clear();
 }

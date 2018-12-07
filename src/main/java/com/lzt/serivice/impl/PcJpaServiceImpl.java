@@ -29,6 +29,11 @@ public class PcJpaServiceImpl implements PcJpaService {
 
     }
 
+    @Override
+    public void save(PC pc) {
+        pcJpadao.save(pc);
+        logger.info( pc.getPCName() + " " +pc.getUsername()+" 保存成功.");
+    }
 
 
     @Override

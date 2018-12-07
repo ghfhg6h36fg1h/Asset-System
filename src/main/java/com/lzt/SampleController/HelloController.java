@@ -59,7 +59,7 @@ public class HelloController {
     @RequestMapping("/Record")
     public String Record() {
 
-        return "record";
+        return "redirect:/RecordList";
     }
 
     @RequestMapping("/password")

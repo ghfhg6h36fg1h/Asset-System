@@ -102,13 +102,13 @@ public class IBMServiceImpl implements IBMService {
     public void BuildQRById(long id) throws WriterException, IOException {
         IBM ibm = findByID(id);
         String filePath = "E:/qr/";  //后期可加时间控件区分名字
-        String fileName = ibm.getName() + ibm.getSn() + "-QR.png";
+        String fileName = ibm.getName()+ibm.getSn()  + ".png";
 
-        String content ="http://192.168.1.156:8080/PrintIBM?id="+ibm.getId();
+        String content ="http://58.246.211.253:8080/PrintIBM?id="+ibm.getId();
 
 
-        int width = 60; // 图像宽度
-        int height = 60; // 图像高度
+        int width = 100; // 图像宽度
+        int height = 100; // 图像高度
         String format = "png";// 图像类型
         Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
         hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");

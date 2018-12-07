@@ -46,7 +46,7 @@
                             型号
                         </div>
                         <div class="col-xs-2">
-                            机型
+                            IP
                         </div>
                         <div class="col-xs-2">
                             序列号
@@ -160,7 +160,7 @@
                 <!--同步-->
                     <script>
                     function synchro() {
-                      //  location.href="/synchro";
+                        location.href="/synchro";
                     }
                 </script>
                 <!--保修-->
@@ -174,7 +174,19 @@
                     function IBMInfo(index) {
                         var yyy = [[${ibmList}]];
                         var IBMid = yyy[index].id;
-                        location.href = "/IBMQR?IBMid=" + IBMid;
+
+                        $.ajax({
+                            url: "/IBMQR",
+                            async: true,
+                            type: "POST",
+                            data: {IBMid: IBMid},
+
+                        });
+
+
+
+
+
                     }
                 </script>
                 <!--修改模态框传值-->
@@ -243,7 +255,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="sOrd" class="col-xs-3 control-label">机型</label>
+                                            <label for="sOrd" class="col-xs-3 control-label">IP</label>
                                             <div class="col-xs-8">
                                                 <input type="" class="form-control input-sm duiqi" id="add_IBMModel2"
                                                        placeholder=""/>
@@ -356,20 +368,7 @@
                         });
                     }
                 </script>
-                <!--详情生成二维码-->
-                <script type="text/javascript">
-                    function QR() {
-                        var id = document.getElementById("modelInfo_ID").value;
-                        var str = "/QRCode";
-                        $.ajax({
-                            url: str,
-                            async: true,
-                            type: "POST",
-                            data: {id: id},
 
-                        });
-                    }
-                </script>
 
                 <!--弹出修改IBM窗口-->
                 <div class="modal fade" id="reviseUser" role="dialog" aria-labelledby="gridSystemModalLabel">
@@ -400,7 +399,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="sKnot" class="col-xs-3 control-label">机型：</label>
+                                            <label for="sKnot" class="col-xs-3 control-label">IP：</label>
                                             <div class="col-xs-8">
                                                 <input type="" class="form-control input-sm duiqi"
                                                        id="updateInfo_model2" placeholder=""/>

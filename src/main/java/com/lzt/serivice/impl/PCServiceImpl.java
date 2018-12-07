@@ -151,5 +151,10 @@ public class PCServiceImpl implements PCService {
 
     }
 
+    @Override
+    public void Clear() {
+         pcdao.clear();
+    }
+
 
 }
