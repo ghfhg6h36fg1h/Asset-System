@@ -298,6 +298,7 @@ public class PCController {
         XSSFWorkbook wb = new XSSFWorkbook(inputStream);
 
         XSSFSheet sheet = wb.getSheetAt(0);
+        sheet.removeRow(sheet.getRow(0));
         JSONObject result = new JSONObject();
         List<PC> pclistTemp = new ArrayList<PC>();
         try {
