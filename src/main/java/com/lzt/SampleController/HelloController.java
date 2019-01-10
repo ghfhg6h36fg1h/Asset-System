@@ -50,7 +50,7 @@ public class HelloController {
         session.setAttribute("truePass", truePassword);
 
         if (password.equals(truePassword))
-            return "redirect:/PC";
+            return "redirect:/SelectPC";
 
         else
             return "Welcome";

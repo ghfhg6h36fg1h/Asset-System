@@ -41,4 +41,26 @@ public interface PcDao  { //extends CrudRepository<PC,Long> {
 
     @Update("truncate table tb2_pc")
     void clear();
+
+    @Select("select * from tb2_pc where " +
+            "((pcname like '%' #{keyword} '%')or(model like '%' #{keyword} '%')or" +
+            "(username like '%' #{keyword} '%' )or(user_number like '%' #{keyword} '%' )" +
+            "or(asset_number like '%' #{keyword} '%' )or(mac like '%' #{keyword} '%')or" +
+            "(floor like '%' #{keyword} '%' )or(sn like '%' #{keyword} '%' ))and" +
+            "(state like '%' #{state} '%')and(net like '%' #{net} '%') and (usb like '%' #{usb}) " +
+            "ORDER by ${sort}  limit #{page},#{printNumber}")
+    List<PC> findPCByPageAndSelect(@Param("page")long page, @Param("printNumber")int printNumber,
+                                   @Param("keyword")String keyWord, @Param("sort")String sort,
+                                   @Param("net")String net,
+                                   @Param("usb")String usb,@Param("state") String state);
+
+    @Select("select count(*) from tb2_pc where " +
+            "((pcname like '%' #{keyword} '%')or(model like '%' #{keyword} '%')or" +
+            "(username like '%' #{keyword} '%' )or(user_number like '%' #{keyword} '%' )" +
+            "or(asset_number like '%' #{keyword} '%' )or(mac like '%' #{keyword} '%')or" +
+            "(floor like '%' #{keyword} '%' )or(sn like '%' #{keyword} '%' ))and" +
+            "(state like '%' #{state} '%')and(net like '%' #{net} '%') and (usb like '%' #{usb}) " )
+    long FindcountBySelect(@Param("keyword")String keyWord, @Param("sort")String sort,
+                           @Param("net")String net,
+                           @Param("usb")String usb,@Param("state") String state);
 }

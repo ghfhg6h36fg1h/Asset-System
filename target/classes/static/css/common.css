@@ -154,7 +154,7 @@ body {
 	color: #00BDEF;
 }
 .check-div input {
-	width: 200px !important;
+	width: 200px ;
 	display: inline;
 }
 .tab-pane {

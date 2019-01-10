@@ -24,4 +24,8 @@ public interface PCService {
     void BuildQRById(long id)throws WriterException ,IOException;
 
     void Clear();
+
+    HashMap findSelectPC(String tempPage, String jumpPage, String keyWord, String sort, String state, String usb, String net,String type,HttpServletRequest request );
+
+    long FindcountBySelect(String keyWord, String sort, String net, String usb, String state);
 }

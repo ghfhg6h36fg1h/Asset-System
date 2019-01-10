@@ -67,7 +67,7 @@ public class PCController {
 
     // 查询PC列表
     @RequestMapping("/PC")
-    public String GetPCList(HttpServletRequest request, HttpServletResponse response, Model model) {
+    public String GetPCList(HttpServletRequest request, Model model) {
 
         String tempPage = request.getParameter("page");  //获取页码
         String jumpPage = request.getParameter("jumpPage");//获取跳转页码
@@ -88,6 +88,7 @@ public class PCController {
         model.addAttribute("currentPage", map.get("currentPage"));
         model.addAttribute("keyWord", map.get("keyWord"));
 
+
         HttpSession session = request.getSession();
         String remark = (String) session.getAttribute("remark");
         String power = (String) session.getAttribute("power");
@@ -98,6 +99,53 @@ public class PCController {
             return "PCManagement";
         else
             return "E404";
+    }
+
+    @RequestMapping("/SelectPC")
+    public String SelectPC(HttpServletRequest request, Model model) {
+        String tempPage = request.getParameter("currentPage");  //获取页码
+        String jumpPage = request.getParameter("jumpPage");//获取跳转页码
+        String type = request.getParameter("type");//获取页码类型
+        String keyWord = request.getParameter("keyWord");//获取关键字
+        String sort = request.getParameter("Ssort");//获取排序值
+        String state = request.getParameter("SState");//获取调拨值
+        String usb = request.getParameter("SUSB");
+        String net = request.getParameter("Snet");
+//        System.out.println(keyWord);
+//         System.out.println(jumpPage);
+ //       System.out.println(type);
+//        System.out.println(sort);
+//        System.out.println(state);
+//        System.out.println(usb);
+//        System.out.println(net);
+
+
+        HashMap map = pcService.findSelectPC(tempPage, jumpPage, keyWord, sort, state, usb, net, type,request);
+        List<PC> pcList = (List<PC>) map.get("pcList");
+        List<ModelFloor> mflist = (List<ModelFloor>) map.get("mflist");
+
+        model.addAttribute("mflist", mflist);
+        model.addAttribute("PCs", pcList);
+        model.addAttribute("PCPage", map.get("Allpage"));
+        model.addAttribute("currentPage", map.get("currentPage"));
+        model.addAttribute("keyWord", map.get("keyWord"));
+        model.addAttribute("usb", map.get("usb"));
+        model.addAttribute("net", map.get("net"));
+        model.addAttribute("sort", map.get("sort"));
+        model.addAttribute("state", map.get("state"));
+
+
+        HttpSession session = request.getSession();
+        String remark = (String) session.getAttribute("remark");
+        String power = (String) session.getAttribute("power");
+        model.addAttribute("remark", remark);
+        model.addAttribute("power", power);
+        model.addAttribute("SumNumber", map.get("SumNumber"));
+        if (power != null)
+            return "PCManagement";
+        else
+            return "E404";
+
     }
 
     @RequestMapping(value = "/SavePC", method = RequestMethod.POST)

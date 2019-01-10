@@ -7,6 +7,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.lzt.dao.PcDao;
+import com.lzt.entity.IBM;
 import com.lzt.entity.ModelFloor;
 import com.lzt.entity.PC;
 import com.lzt.serivice.ModelFloorService;
@@ -37,7 +38,7 @@ public class PCServiceImpl implements PCService {
     private ModelFloorService modelFloorService;
 
     @Override
-    public HashMap findPCByPage(String tempPage, String jumpPage, String type, String keyWord, String sort, String state,HttpServletRequest request) {
+    public HashMap findPCByPage(String tempPage, String jumpPage, String type, String keyWord, String sort, String state, HttpServletRequest request) {
 
         HttpSession session = request.getSession();
         long currentPage;  //当前页
@@ -51,9 +52,9 @@ public class PCServiceImpl implements PCService {
                 session.setAttribute("sort", "model");
                 session.setAttribute("sortType", "DESC");
 
-                if (state==null)//点查询时，或初始化
+                if (state == null)//点查询时，或初始化
                 {
-                    session.setAttribute("state","");
+                    session.setAttribute("state", "");
                 }
             }
         } else if (tempPage != null) {//获取当前页 +1或-1
@@ -63,8 +64,8 @@ public class PCServiceImpl implements PCService {
             else
                 currentPage = page - 1;
         } else {  //跳转页面
-            if (jumpPage=="")
-                currentPage=1;
+            if (jumpPage == "")
+                currentPage = 1;
             else {
                 int page = Integer.parseInt(jumpPage);
                 currentPage = page;
@@ -73,7 +74,7 @@ public class PCServiceImpl implements PCService {
         // 分页多条件缓存
         if (keyWord != null)
             session.setAttribute("keyword", keyWord);
-        if (state!=null) {
+        if (state != null) {
             session.setAttribute("state", state);
         }
         if (sort != null) {
@@ -87,10 +88,10 @@ public class PCServiceImpl implements PCService {
         keyWord = (String) session.getAttribute("keyword");
         sort = (String) session.getAttribute("sort");
         sortType = (String) session.getAttribute("sortType");
-        state=(String)session.getAttribute("state");
-        long SumNumber=this.Findcount(keyWord,state);
+        state = (String) session.getAttribute("state");
+        long SumNumber = this.Findcount(keyWord, state);
 
-        Allpage =  SumNumber/ PrintNumber + 1;
+        Allpage = SumNumber / PrintNumber + 1;
 
 //防呆
         if (currentPage > Allpage) currentPage = Allpage;
@@ -98,13 +99,13 @@ public class PCServiceImpl implements PCService {
 
 
         long StatNumber = (currentPage - 1) * PrintNumber;
-        List<PC> pcList = pcdao.findPCByPage(StatNumber, PrintNumber, keyWord, sort, sortType,state);
+        List<PC> pcList = pcdao.findPCByPage(StatNumber, PrintNumber, keyWord, sort, sortType, state);
 
 // 取出所有ModelFloor
-        List<ModelFloor> mflist=modelFloorService.findAll();
+        List<ModelFloor> mflist = modelFloorService.findAll();
 
         HashMap map = new HashMap();
-        map.put("mflist",mflist);
+        map.put("mflist", mflist);
         map.put("pcList", pcList);
         map.put("Allpage", Allpage);
         map.put("currentPage", currentPage);
@@ -114,8 +115,8 @@ public class PCServiceImpl implements PCService {
     }
 
     @Override
-    public long Findcount(String keyword,String state) {
-        return pcdao.Findcount(keyword,state);
+    public long Findcount(String keyword, String state) {
+        return pcdao.Findcount(keyword, state);
     }
 
     @Override
@@ -131,12 +132,12 @@ public class PCServiceImpl implements PCService {
     }
 
     @Override
-    public void BuildQRById(long id) throws WriterException,IOException {
+    public void BuildQRById(long id) throws WriterException, IOException {
         PC pc = findByID(id);
         String filePath = "E:/qr/";  //后期可加时间控件区分名字
-        String fileName = pc.getPCName()+"-QR.png";
+        String fileName = pc.getPCName() + "-QR.png";
 
-        String content ="http://192.168.1.156:8080/PrintPC?id="+pc.getId();
+        String content = "http://192.168.1.156:8080/PrintPC?id=" + pc.getId();
 
         int width = 200; // 图像宽度
         int height = 200; // 图像高度
@@ -147,13 +148,107 @@ public class PCServiceImpl implements PCService {
                 BarcodeFormat.QR_CODE, width, height, hints);// 生成矩阵
         Path path = FileSystems.getDefault().getPath(filePath, fileName);
         MatrixToImageWriter.writeToPath(bitMatrix, format, path);// 输出图像
-        System.out.println(pc.getPCName()+"  输出成功.");
+        System.out.println(pc.getPCName() + "  输出成功.");
 
     }
 
     @Override
     public void Clear() {
-         pcdao.clear();
+        pcdao.clear();
+    }
+
+    @Override
+    public HashMap findSelectPC(String tempPage, String jumpPage, String keyWord, String sort, String state, String usb, String net, String type, HttpServletRequest request) {
+
+        long currentPage = 1;
+        HashMap map = new HashMap();
+        HttpSession session = request.getSession();
+
+        if (jumpPage != null) //只有点跳转不为null
+            type = "jump";
+        if (jumpPage == "")
+            jumpPage = "1";
+
+        if (keyWord == null && type == null) { //PC管理跳转  (初始化)
+            session.setAttribute("keyWord", "");
+            session.setAttribute("usb", "");
+            session.setAttribute("net", "");
+            session.setAttribute("state", "");
+            session.setAttribute("sort", "model");
+        }
+
+        //点击查询
+        if (keyWord != null) session.setAttribute("keyWord", keyWord);
+        if (usb != null) session.setAttribute("usb", usb);
+        if (net != null) session.setAttribute("net", net);
+        if (state != null) session.setAttribute("state", state);
+
+        if (sort == "") {//为空初始化排序
+            sort = "model";
+            session.setAttribute("sort", "model");
+        }
+        if (sort != "" && sort != null) session.setAttribute("sort", sort);
+
+//上一页 下一页 跳转
+        if (sort == null) sort = (String) session.getAttribute("sort");
+
+        if (keyWord == null) keyWord = (String) session.getAttribute("keyWord");
+
+        if (usb == null) usb = (String) session.getAttribute("usb");
+        if (net == null) net = (String) session.getAttribute("net");
+        if (state == null) state = (String) session.getAttribute("state");
+
+        System.out.println(type);
+        if (type == null)
+            currentPage = 1;
+        else if (type == "jump")
+            currentPage = Integer.parseInt(jumpPage);
+        else if (type.equals("next"))
+            currentPage = Integer.parseInt(tempPage) + 1;
+        else if (type.equals("last"))
+            currentPage = Integer.parseInt(tempPage) - 1;
+
+
+        long SumNumber = this.FindcountBySelect(keyWord, sort, net, usb, state);//待更改
+
+        long Allpage = SumNumber / PrintNumber + 1;
+
+//防呆
+        if (currentPage > Allpage) currentPage = Allpage;
+        if (currentPage <= 0) currentPage = 1;
+        System.out.println(currentPage);
+        System.out.println(Allpage);
+
+        long StatNumber = (currentPage - 1) * PrintNumber;
+        System.out.println(StatNumber);
+//        System.out.println("-----------------------------------");
+//        System.out.println(StatNumber);
+//        System.out.println(PrintNumber);
+//        System.out.println(keyWord);
+//        System.out.println(sort);
+//        System.out.println(net);
+//        System.out.println(usb);
+//        System.out.println(state);
+//        System.out.println("-----------------------------------");
+
+        List<PC> pcList = pcdao.findPCByPageAndSelect(StatNumber, PrintNumber, keyWord, sort, net, usb, state);
+        List<ModelFloor> mflist = modelFloorService.findAll();
+        map.put("mflist", mflist);
+        map.put("pcList", pcList);
+        map.put("Allpage", Allpage);
+        map.put("currentPage", currentPage);
+        map.put("keyWord", keyWord);
+        map.put("sort", sort);
+        map.put("net", net);
+        map.put("state", state);
+        map.put("usb", usb);
+        map.put("SumNumber", SumNumber);
+        return map;
+    }
+
+    @Override
+    public long FindcountBySelect(String keyWord, String sort, String net, String usb, String state) {
+        return pcdao.FindcountBySelect(keyWord, sort, net, usb, state);
     }
 
 

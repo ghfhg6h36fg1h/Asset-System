@@ -19,57 +19,105 @@
 
                 <div class="check-div form-inline">
 
-                    <div class="col-xs-3">
+                    <div class="col-xs-3" style="width: 15%">
                         <button id="addButton" class="btn btn-yellow btn-xs" data-toggle="modal" data-target="#addUser">
                             添加PC
                         </button>
                         <!--<button id="ptButton" class="btn btn-green btn-xs" type="submit" onclick="ALLQR()">批量生成二维码-->
                         <!--</button>-->
-
-
                     </div>
+<form action="/SelectPC">
+    <div class="col-xs-4">
+        <input  style="width: 100px" type="text"  class="form-control input-sm" id="keyWord" name="keyWord"
+        placeholder="输入文字搜索" th:value="${keyWord}"/>
 
-                    <form action="/PC">
-                        <div class="col-xs-4">
-                            <input type="text" class="form-control input-sm" id="keyWord" name="keyWord"
-                                   placeholder="输入文字搜索" th:value="${keyWord}"/>
-                            <button class="btn btn-white btn-xs " type="submit">查 询</button>
-                            <button class="btn btn-green btn-xs" type="button" onclick="Allocation()">调 拨</button>
-                            <button class="btn btn-green btn-xs" type="button" onclick="SelectAllPC()">简 查</button>
+        <select id="Ssort" name="Ssort"  class=" form-control">
+        <option th:selected="${sort=='floor'}" value="floor">楼层排序</option>
+        <option th:selected="${sort=='pcname'}" value="pcname">PC名排序</option>
+        <option th:selected="${sort=='model'}" value="model">型号排序</option>
+        </select>
+        <select id="Snet" name="Snet"  class=" form-control">
+            <option value="" selected="">---是否上网---</option>
+            <option th:selected="${net=='0'}" value="0">不上网</option>
+            <option th:selected="${net=='1'}" value="1">上网</option>
+        </select>
+        <select id="SState" name="SState"  class=" form-control">
+            <option value="" selected="">---是否调拨---</option>
+            <option th:selected="${state=='0'}" value="0">待调拨</option>
+            <option th:selected="${state=='1'}" value="1">正常</option>
+        </select>
+        <select id="SUSB" name="SUSB"  class=" form-control">
+            <option value="" selected="">---USB状态---</option>
+            <option th:selected="${usb=='0'}" value="0">关USB</option>
+            <option th:selected="${usb=='1'}" value="1">开USB</option>
+        </select>
+        <button class="btn btn-white btn-xs " type="submit" onclick="SelectPC()">查 询</button>
+    </div>
+</form>
 
-                        </div>
-                    </form>
+                    <ul class="nav navbar-nav" style="margin-top: 8px; margin-right: 10px">
+                    <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    功能<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    <li><a href="/DownPC">导出</a></li>
+
+                    <li th:if="${power} ne 'guest'">
+                    <a data-toggle="modal"
+                    data-target="#InputPC" href="#">导入</a>
+                    <a data-toggle="modal"
+                    data-target="#clearPC" href="#">清空数据</a>
+
+                    </li>
+                    <li class="divider"></li>
+                    <li><a href="/ALLQR">批量生成二维码</a></li>
+                    </ul>
+                    </li>
+                    </ul>
 
 
-                    <div class="col-lg-3 col-lg-offset-2 col-xs-4" style=" padding-right: 40px;text-align: right;">
-                        <label for="paixu">排序:&nbsp;</label>
-                        <select id="sort" name="sort" onchange="Sort()" class=" form-control">
-                            <option value="" selected="">---请选择---</option>
-                            <option value="floor">楼层</option>
-                            <option value="pcname">PC名</option>
-                            <option value="model">型号</option>
-                        </select>
-                        <ul class="nav navbar-nav" style="margin-top: 8px; float: right">
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    功能<b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/DownPC">导出</a></li>
+                    <!--<form action="/PC">-->
+                        <!--<div class="col-xs-4">-->
+                            <!--<input type="text" class="form-control input-sm" id="keyWord" name="keyWord"-->
+                                   <!--placeholder="输入文字搜索" th:value="${keyWord}"/>-->
+                            <!--<button class="btn btn-white btn-xs " type="submit">查 询</button>-->
+                            <!--<button class="btn btn-green btn-xs" type="button" onclick="Allocation()">调 拨</button>-->
+                            <!--<button class="btn btn-green btn-xs" type="button" onclick="SelectAllPC()">简 查</button>-->
 
-                                    <li th:if="${power} ne 'guest'">
-                                        <a data-toggle="modal"
-                                           data-target="#InputPC" href="#">导入</a>
-                                        <a data-toggle="modal"
-                                           data-target="#clearPC" href="#">清空数据</a>
+                        <!--</div>-->
+                    <!--</form>-->
+                    <!---->
+                    <!--<div class="col-lg-3 col-lg-offset-2 col-xs-4" style=" padding-right: 40px;text-align: right;">-->
+                        <!--<label for="paixu">排序:&nbsp;</label>-->
+                        <!--<select id="sort" name="sort" onchange="Sort()" class=" form-control">-->
+                            <!--<option value="" selected="">-&#45;&#45;请选择-&#45;&#45;</option>-->
+                            <!--<option value="floor">楼层</option>-->
+                            <!--<option value="pcname">PC名</option>-->
+                            <!--<option value="model">型号</option>-->
+                        <!--</select>-->
+                        <!--<ul class="nav navbar-nav" style="margin-top: 8px; float: right">-->
+                            <!--<li class="dropdown">-->
+                                <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown">-->
+                                    <!--功能<b class="caret"></b></a>-->
+                                <!--<ul class="dropdown-menu">-->
+                                    <!--<li><a href="/DownPC">导出</a></li>-->
 
-                                    </li>
-                                    <li class="divider"></li>
-                                    <li><a href="/ALLQR">批量生成二维码</a></li>
-                                </ul>
-                            </li>
-                        </ul>
+                                    <!--<li th:if="${power} ne 'guest'">-->
+                                        <!--<a data-toggle="modal"-->
+                                           <!--data-target="#InputPC" href="#">导入</a>-->
+                                        <!--<a data-toggle="modal"-->
+                                           <!--data-target="#clearPC" href="#">清空数据</a>-->
 
-                    </div>
+                                    <!--</li>-->
+                                    <!--<li class="divider"></li>-->
+                                    <!--<li><a href="/ALLQR">批量生成二维码</a></li>-->
+                                <!--</ul>-->
+                            <!--</li>-->
+                        <!--</ul>-->
+
+                    <!--</div>-->
+
+
 
                 </div>
 
@@ -237,7 +285,22 @@
                         //    document.getElementById("updateInfo_userName").value ="5555";
                     }
                 </script>
+<!-- 筛选查询-->
+                <script>
+                    $(function () {
 
+                      //  console.log([[${keyWord}]]);
+                      //   var yyy = [[${keyWord}]];
+                      //   console.log(yyy);
+                        // console.log([[${usb}]]);
+                        // console.log([[${net}]]);
+                        // console.log([[${state}]]);
+                      // $("#Snet")[0].selectedIndex = 1;
+                    })
+
+
+
+                </script>
 
                 <!--排序选择-->
                 <script>
@@ -303,12 +366,14 @@
                 <footer class="footer">
                     <ul class="pagination">
 
-                        <form action="/PC" id="fff" name="fff">
+                        <form action="/SelectPC" id="fff" name="fff">
                             <input type="text" id="jumpPage" name="jumpPage" style="width:30px;"/>
-                            <button type="submit">跳转</button>
-                            <a th:href="@{/PC(page=${currentPage},type =last)}">上一页</a>
+                            <button type="submit" >跳转</button>
+                            <a th:href="@{/SelectPC(currentPage=${currentPage},type ='last')}">上一页</a>
+                            <!--<a th:onclick="'javascript:SelectPC('+'\''+${currentPage}+'\''+','+'\''+last+'\''+')'">上一页</a>-->
                             <span th:text="${currentPage}"/>
-                            <a th:href="@{/PC(page=${currentPage},type=next)}">下一页</a>
+                            <a th:href="@{/SelectPC(currentPage=${currentPage},type ='next')}">下一页</a>
+                            <!--<a th:onclick="'javascript:SelectPC('+'\''+${currentPage}+'\''+','+'\''+next+'\''+')'">下一页</a>-->
                             共<span th:text="${PCPage}"/>页
                             ALL：<span th:text="${SumNumber}"/>
                         </form>
