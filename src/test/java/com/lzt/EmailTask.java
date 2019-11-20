@@ -23,8 +23,8 @@ public class EmailTask implements Runnable{
         // 设定mail server
         senderImpl.setHost("smtp.sh-liangxin.com");
         senderImpl.setPort(465);
-        senderImpl.setUsername("liangzhuotong@sh-liangxin.com");               // 根据自己的情况,设置发件邮箱地址
-        senderImpl.setPassword("liangtong884");          // 根据自己的情况, 设置password
+        senderImpl.setUsername("");               // 根据自己的情况,设置发件邮箱地址
+        senderImpl.setPassword("");          // 根据自己的情况, 设置password
         senderImpl.setDefaultEncoding("UTF-8");
         Properties prop = new Properties();
         prop.put("mail.smtp.auth", "true");                 // 将这个参数设为true，让服务器进行认证,认证用户名和密码是否正确
